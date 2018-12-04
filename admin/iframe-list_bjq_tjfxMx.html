@@ -1,0 +1,261 @@
+<!--
+	班级文章明细页相关业务页面
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<title>班级文章明细页</title>
+
+<link rel="stylesheet" href="layui225/css/layui.css" media="all">
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<style>
+body{padding: 0px;}
+.layui-table img{ max-width: none;}
+</style>
+</head>
+<body onload="onload_list();Btn_defined();">	
+<div class="layui-btn-group">
+	<button class="layui-btn" data-type="SelectData"><i class="layui-icon">&#xe615;</i> 查询</button>
+	<button class="layui-btn" data-type="DownloadData"><i class="layui-icon">&#xe615;</i> 下载</button>	
+    <button class="layui-btn" data-type="PageReload"><i class="layui-icon">&#x1002;</i> 刷新</button>
+</div>	
+<hr class="layui-bg-green">
+<table id="DataList">
+	<div id="aaaaa" style="position: fixed; margin: 6px;">数据加载中...</div>
+</table>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/md5.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/public.js"></script>
+<script type="text/javascript" src="js/api.js"></script>
+<script src="layui225/layui.js"></script>
+<script>
+var total;
+var field_arr=new Array("ID","NJMC","BJMC","NJID","BJID","BJGG","BJXW","BJRZ","JZRZ");
+var title_arr=new Array("序号","年级名称","班级名称","年级ID","班级ID","班级通知（条）","班级新闻（条）","班级荣誉（条）","家长留言（条）");
+//加载数据表格
+function onload_list(NJID, BJID, FBSJ_a, FBSJ_b) {
+	layui.use('table', function(){
+	  var table = layui.table;
+		var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功  
+		
+		//没传班级ID时，默认为任教班级
+		var bjid_str = get_session("RJBJ");
+		
+		if(BJID==undefined || BJID=='')
+		{
+        	//全校管理员FBID为DWID
+        	if(UserMannagerType(get_session("YHM"))=="99")
+        	{
+        	BJID='';
+        	}
+        	else
+        	{
+        	BJID=bjid_str;	
+        	}			
+			
+		}	
+
+	  //请求接口数据
+	  total = list_bjqmx(NJID, BJID, FBSJ_a, FBSJ_b);
+	  
+	  //方法级渲染
+	  window.demoTable = table.render({
+	   skin: 'line' //行边框风格 //表格风格row/line/nob
+	  ,even: true //开启隔行背景
+	  //,size: 'sm' //小尺寸的表格  	
+		,page: true //是否显示分页
+		,limits: [15,30,50,100,500]//选择每页显示数
+		,limit: 50 //每页默认显示的数量
+		,loading: true //请求数据时，是否显示loading,需URL请求时生效
+		,id: 'DataListId' //ID  
+	    ,elem: '#DataList'
+		,data: total
+		,height: 670
+		,cols: [[ //标题栏
+		  {space: true, fixed: true}//设定空隙列space: true, 是否固定列fixed: false
+		  //,{checkbox: true, LAY_CHECKED: false,fixed:'left'}//设定复选框列,复选框默认全部选中
+		  ,{field: field_arr[0], title: '<strong>'+title_arr[0]+'</strong>', width: 100, sort: true,fixed:'left', type:'asc'}
+		  ,{field: field_arr[1], title: '<strong>'+title_arr[1]+'</strong>', width: 150, sort: true}
+		  ,{field: field_arr[2], title: '<strong>'+title_arr[2]+'</strong>', width: 150, sort: true}
+		  ,{field: field_arr[3], title: '<strong>'+title_arr[3]+'</strong>', width: 200, sort: true}      
+		  ,{field: field_arr[4], title: '<strong>'+title_arr[4]+'</strong>', width: 200, sort: true}	  	  
+		  ,{field: field_arr[5], title: '<strong>'+title_arr[5]+'</strong>', width: 150, sort: true, fixed:'right'}
+		  ,{field: field_arr[6], title: '<strong>'+title_arr[6]+'</strong>', width: 150, sort: true, fixed:'right'}
+		  ,{field: field_arr[7], title: '<strong>'+title_arr[7]+'</strong>', width: 150, sort: true, fixed:'right'}
+		  ,{field: field_arr[8], title: '<strong>'+title_arr[8]+'</strong>', width: 150, sort: true, fixed:'right'}
+		]]  
+	  ,done: function(res, curr, count){
+		//如果是异步请求数据方式，res即为你接口返回的信息。
+		//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+	  }    
+	  });
+	});
+}  
+
+function Btn_defined() {
+	//初始化操作按钮，并绑定对应事件	
+	layui.use('table', function() {
+		var table = layui.table;
+		var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功  
+ 		var $ = layui.jquery, active = {
+			//查询数据
+		SelectData: function() {
+				var content = "";
+				content += '<br><br>';
+				content += '  	<form class="layui-form" action="" style="margin:10px;">';
+
+				content += '    <div class="layui-form-item">';
+				content += '	    <div class="layui-inline">';
+				// content += '	    	<label class="layui-form-label">年级</label>';
+				// content += '	    	<div id="layui-input-inline" class="layui-input-inline">';
+				// content += '	    		<select id="SelectGrade" name="SelectGrade" lay-filter="Grade_sel">';
+				// content += '	    		</select>';
+				// content += '	    	</div>';
+				content += '	    	<label class="layui-form-label">班级</label>';
+				content += '	    	<div id="layui-input-inline" class="layui-input-inline">';
+				content += '	    		<select id="mySelect" name="city">';
+				content += '	    			<option value=""></option>';
+				content += '	    		</select>';
+				content += '	    	</div>';
+				content += '	    </div>';
+				content += '    </div>';
+
+				content += '    <div class="layui-form-item">';
+				content += '	    <div class="layui-inline">';
+				content += '	    	<label class="layui-form-label">时间（起）</label>';
+				content += '	    	<div id="layui-input-inline" class="layui-input-inline">';
+				content += '    			<input type="text" class="layui-input" id="FBSJ_a" placeholder="yyyy-MM-dd HH:mm:ss">';
+				content += '	    	</div>';
+				content += '	    	<label class="layui-form-label">时间（止）</label>';
+				content += '	    	<div id="layui-input-inline" class="layui-input-inline">';
+				content += '    			<input type="text" class="layui-input" id="FBSJ_b" placeholder="yyyy-MM-dd HH:mm:ss">';
+				content += '	    	</div>';
+				content += '	    </div>';
+				content += '    </div>';
+
+
+				content += '    <div class="layui-form-item">';
+				content += '	    <div class="layui-input-block">';
+				content += '	    	<input type="button" class="layui-btn layui-btn-warm" value="立即查询" onclick="button_select();">';
+				content += '	    	<input type="button" class="layui-btn layui-btn-primary" value="关闭窗口" onclick="button_close();">';
+				content += '	    </div>';
+				content += '    </div>';
+
+				content += '  	</form>';
+				//弹出查看框
+				layer.open({
+					type: 1,
+					title: '查询内容',
+					area: ['1000px', '700px'],
+					//offset: ['10px', '100px'],
+					content: content //这里content是一个普通的String
+				});
+				
+				//根据用户名，返回学部信息
+				//var num = YHM_str(get_session("YHM"));
+
+				//获取年级对应的名称，根据学部信息，对应权限，显示对应下拉列表
+				// Grede_list(num);//获取初中管理员对应的下拉列表
+				// form.on('select(Grade_sel)', function(data) {
+				// 	gradeid = data.value;
+				// 	Class_list(data.value);
+				// 	form.render();
+				// });
+
+				//获取班级对应的名称，下拉列表
+				selectClass(function(result) { //   发布范围 选择班级
+					var obj = s("mySelect");
+					var lenBj = result.length;
+					for (var i = lenBj - 1; i >= 0; i--) {
+						var B_Class = result[i].NJMC;
+						var B_Name = result[i].BJMC;
+						var B_ID = result[i].BJID;
+						//obj.add(new Option(B_Class+B_Name+"班", B_ID));
+						obj.add(new Option(B_Name + "(" + B_Class + ")", B_ID));
+					}
+				});				
+						
+				layui.use('laydate', function() {
+					var laydate = layui.laydate;
+					//时间选择器
+					laydate.render({
+						elem: '#FBSJ_a',
+						type: 'datetime'
+					});
+					laydate.render({
+						elem: '#FBSJ_b',
+						type: 'datetime'
+					});
+				});
+				
+				form.render();
+			} 
+    //下载
+    ,DownloadData:function(){
+
+		//准备参数
+		var Title_Name = "BJMX";//仅支持英文
+		var Title_Head = "序号,年级名称,年级ID,班级名称,班级ID,班级通知,班级新闻,班级荣誉,家长留言"; 
+		var Title_En_Head = "ID,NJMC,NJID,BJMC,BJID,BJGG,BJXW,BJRZ,JZRZ"; 
+		var data_json = JSON.stringify(total);
+		//调用导出Excel接口
+	    download_excel(Title_Name,Title_Head,Title_En_Head,data_json);
+    }
+    //刷新
+    ,PageReload:function(){
+    	window.location.reload()
+    }
+  };
+
+	//监听工具栏对应操作
+  $('.layui-btn').on('click', function(obj){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+  
+});
+}
+
+</script>
+
+<script type="text/javascript">
+//相关操作函数
+
+//表单提交查询函数
+function button_select() {
+	//var Grade_sl = s("SelectGrade").value;
+	//var Class_sl = s("SelectClass").value;
+	var Grade_sl = "";
+	var Class_sl = s("mySelect").value;
+	var FBSJ_a_sl = $("input[id='FBSJ_a']").val();
+	var FBSJ_b_sl = $("input[id='FBSJ_b']").val();
+	if (FBSJ_a_sl != "" && FBSJ_b_sl != "") {
+		//权限验证模块
+		try {
+			if (FBSJ_a_sl >= FBSJ_b_sl) throw "时间（起）必须小于时间（止）";
+		} catch (err) {
+			//打印验证提示
+			var responseInfo = err;
+			layer_open('信息提示', responseInfo);
+			return false;
+		}
+	}
+
+	onload_list(Grade_sl, Class_sl, FBSJ_a_sl, FBSJ_b_sl);
+	layer.closeAll();
+}
+
+//暂不更新
+function button_close()
+{
+layer.closeAll();	
+}	
+
+</script>  
+<script type="text/javascript" src="js/wufangeditor.js"></script>
+</body>
+</html>

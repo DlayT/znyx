@@ -1,0 +1,49 @@
+<!-- 
+ * @Author: Cityfox(29151335@qq.com)
+ * @Date: 2018-02-05 09:27:40 
+ * @PageName: 平台监控系统-操作日志
+ * @PageDes: 展示相关信息
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+	<!-- 清楚缓存 -->
+	<meta HTTP-EQUIV="pragma" CONTENT="no-cache"> 
+	<meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate"> 
+	<meta HTTP-EQUIV="expires" CONTENT="0">	
+	<!-- 清楚缓存 -->    
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title><!--无需标题--></title>
+    <link rel="stylesheet" href="layui225/css/layui.css" media="all"> <!--LayUi框架CSS-->
+    <link rel="stylesheet" type="text/css" href="css/main.css">       <!--项目CSS-->
+    <link rel="stylesheet" href="editor/fontAwesome/css/font-awesome.min.css"><!--editor编辑器字体-->
+    <link rel="stylesheet" href="editor/richEditor.css">			  <!--editor编辑器CSS--> 
+    <script type="text/javascript" src="js/jquery.min.js"></script>   <!--JQ-->
+    <script type="text/javascript" src="js/md5.js"></script>          <!--MD5处理JS-->
+    <script type="text/javascript" src="js/config.js"></script>       <!--项目配置JS-->
+    <script type="text/javascript" src="js/public.js"></script>       <!--公共通用JS-->
+    <script type="text/javascript" src="js/api.js"></script>          <!--接口交互JS-->
+    <script src="layui225/layui.js"></script>                         <!--LayUi框架JS-->
+    <script src="editor/richEditor.min.loc.js"></script>              <!--editor编辑器JS-->   
+</head>
+
+<body onload="onload_list();Btn_defined();">
+	
+		<div id="HeadList"  class="layui-btn-group">
+			<!-- 头部操作按钮 -->
+		</div>
+			
+		<hr class="layui-bg-green"><!-- 水平线 -->   
+		
+		<table id="DataList" lay-filter="demo">
+			<!-- 数据表格 --> 
+			<div id="aaaaa" style="position: fixed; margin: 6px;">数据加载中...</div>
+		</table>
+
+</body>
+<!-- 引用当前业务JS -->
+<script src="js/logins.js"></script>
+<script src="controller/iframe-list_adminczrz.js"></script>
+</html>

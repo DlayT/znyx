@@ -1,0 +1,980 @@
+<!--
+	班级圈相关业务页面
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>家长日志</title>
+
+    <link rel="stylesheet" href="layui225/css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="editor/fontAwesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="editor/richEditor.css">
+    <style>
+        body {
+            padding: 0px;
+        }
+        
+        img {
+            max-width: 100%;
+        }
+        
+        .layui-table img {
+            max-width: none;
+        }
+        
+        .re-container {
+            color: #000;
+        }
+        
+        .re-editor img {
+            max-width: 100%;
+        }
+        
+        .re-editor span {
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body onload="onload_list();Btn_defined();">
+    <div class="layui-btn-group">
+        <button class="layui-btn BIG" data-type="AddNewData"><i class="layui-icon">&#xe654;</i> 新增</button>
+        <button class="layui-btn" data-type="UpdateData"><i class="layui-icon">&#xe642;</i> 编辑</button>
+        <button class="layui-btn" data-type="LookData"><i class="layui-icon">&#xe621;</i> 查看</button>
+        <button class="layui-btn" data-type="DelCheckData"><i class="layui-icon">&#xe640;</i> 删除</button>
+        <button class="layui-btn" data-type="SelectData"><i class="layui-icon">&#xe615;</i> 查询</button>
+        <button class="layui-btn" data-type="PageReload"><i class="layui-icon">&#x1002;</i> 刷新</button>
+    </div>
+	<hr class="layui-bg-green">    
+    <table id="DataList">
+        <div id="aaaaa" style="position: fixed; margin: 6px;">数据加载中...</div>
+    </table>
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/md5.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/public.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script src="layui225/layui.js"></script>
+    <script src="editor/richEditor.min.js"></script>
+
+    <script type="text/javascript">
+        //相关操作函数
+
+        //加载数据表格
+        function onload_list(FBID, SFFB, ZYMC, TJRY, FBSJ_a, FBSJ_b) {
+
+            ////初始化参数
+            //var ZYLB_CFG = GetKeyZYLB(getQueryString("CODE"));
+            //var ZYFL_CFG = GetKeyName_sys(getQueryString("CODE"));
+            //var FBFW = 4 ;
+
+            //未定义显示任教班级下内容，定义了按定义查询
+            if (FBID == undefined || FBID == "") {
+            	//全校管理员FBID为DWID
+            	if(UserMannagerType(get_session("YHM"))=="99")
+            	{
+            	var FBID_s = get_session("DWID");	
+            	}
+            	else
+            	{
+            	var FBID_s = get_session("RJBJ");	
+            	}
+                
+            } else {
+                var FBID_s = FBID;
+            }
+
+
+            if (SFFB == undefined || SFFB == "") {
+                var SFFB_s = '0,1';
+            } else {
+                var SFFB_s = SFFB;
+            }
+
+
+            layui.use('table', function() {
+                var table = layui.table;
+                var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功  
+                //请求接口数据
+                var total = list_bjgg(FBID_s, SFFB_s, ZYMC, TJRY, FBSJ_a, FBSJ_b);
+				//
+                if (total != null) {
+                    //接口数据重写
+                    total.forEach(function(Value, index) {
+                        Value.SFFB_STR = SFFB_str(Value.SFFB);
+                        Value.ZYTP_SM = '<img src="' + pic(Value.ZYTP) + '" width="200px" />';
+                        Value.ZYTP_LG = '<img src="' + pic(Value.ZYTP) + '" />';
+                    });
+                }
+
+                //方法级渲染
+                window.demoTable = table.render({
+                    skin: 'line' //行边框风格 //表格风格row/line/nob
+                        ,
+                    even: true //开启隔行背景
+                        //,size: 'sm' //小尺寸的表格  	
+                        ,
+                    page: true //是否显示分页
+                        ,
+                    limits: [14, 30, 50, 100] //选择每页显示数
+                        ,
+                    limit: 14 //每页默认显示的数量
+                        ,
+                    loading: true //请求数据时，是否显示loading,需URL请求时生效
+                        ,
+                    id: 'DataListId' //ID  
+                        ,
+                    elem: '#DataList',
+                    data: total,
+                    height: 670,
+                    cols: [
+                        [ //标题栏
+                            {
+                                space: true,
+                                fixed: true
+                            } //设定空隙列space: true, 是否固定列fixed: false
+                            , {
+                                checkbox: true,
+                                LAY_CHECKED: false,
+                                fixed: 'left'
+                            } //设定复选框列,复选框默认全部选中
+                            , {
+                                field: 'ID',
+                                title: '<strong>序号</strong>',
+                                width: 100,
+                                sort: true,
+                                fixed: 'left',
+                                type: 'asc'
+                            }, {
+                                field: 'BJMC',
+                                title: '<strong>班级</strong>',
+                                width: 200,
+                                sort: true
+                            }, {
+                                field: 'FBID',
+                                title: '<strong>班级ID</strong>',
+                                width: 200,
+                                sort: true
+                            }, {
+                                field: 'ZYMC',
+                                title: '<strong>标题</strong>',
+                                width: 640,
+                                sort: true
+                            }, {
+                                field: 'TJRY',
+                                title: '<strong>创建人</strong>',
+                                width: 200,
+                                sort: true
+                            }, {
+                                field: 'FBSJ',
+                                title: '<strong>创建时间</strong>',
+                                width: 200,
+                                sort: true
+                            }, {
+                                field: 'SFFB_STR',
+                                title: '<strong>状态</strong>',
+                                width: 100,
+                                sort: true,
+                                fixed: 'right'
+                            }
+
+                        ]
+                    ],
+                    done: function(res, curr, count) {
+                        //如果是异步请求数据方式，res即为你接口返回的信息。
+                        //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                        ////    
+                        //得到当前页码
+                        //    
+                        //得到数据总量
+                        //
+						TableLoadInfo(res,curr,count);
+                          
+                    }
+                });
+
+
+            });
+
+        }
+
+        function Btn_defined() {
+            //初始化操作按钮，并绑定对应事件	
+            layui.use('table', function() {
+                var table = layui.table;
+                var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功  
+                var $ = layui.jquery,
+                    active = {
+                        //新增数据
+                        AddNewData: function() {
+                                var content = "";
+                                content += '<br><br>';
+                                content += '  	<form class="layui-form" action="" style="margin:10px;">';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '	    <div class="layui-input-block">';
+                                content += '	    	<input type="button" class="layui-btn layui-btn-warm" value="立即新增" onclick="button_add();">';
+                                content += '	    	<input type="button" class="layui-btn layui-btn-primary" value="关闭窗口" onclick="button_close();">';
+                                content += '	    </div>';
+                                content += '    </div>';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '	    <div class="layui-inline">';
+                                content += '	    	<label class="layui-form-label">发布区域</label>';
+                                content += '	    	<div id="layui-input-inline" class="layui-input-inline">';
+                                content += '	    		<select id="mySelect" name="city">';
+                                content += '	    			<option value=""></option>';
+                                content += '	    		</select>';
+                                content += '	    	</div>';
+                                content += '	    	<label class="layui-form-label">状态</label>';
+                                content += '	    	<div class="layui-input-inline">';
+                                content += '	    		<input type="radio" name="SFFB" value="1" title="发布" >';
+                                content += '	    		<input type="radio" name="SFFB" value="0" title="不发布" checked>';
+                                content += '	    	</div>';
+                                content += '	    </div>';
+                                content += '    </div>';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '    	<label class="layui-form-label">标题</label>';
+                                content += '    	<div class="layui-input-block">';
+                                content += '    		<input type="text" name="ZYMC" lay-verify="title" class="layui-input" value="" placeholder="标题不超过30位中文">';
+                                content += '    	</div>';
+                                content += '    </div>';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '    	<label class="layui-form-label">默认封面</label>';
+                                content += '    	<div class="layui-input-inline">';
+                                content += '<img src="image/dafault.jpg" width="100px" />';
+                                content += '    	</div>';
+                                content += '    	<label class="layui-form-label">更换封面</label>';
+                                content += '    	<div class="layui-input-inline">';
+                                content += '    		<div id="img_list">';
+                                content += '    			<div id="upload_aa">';
+                                content += '    				<a class="a-upload">';
+                                content += '    					<input type="file" name="medias" id="medias" onchange="imagePreview(this,1);">';
+                                content += '    				</a>';
+                                content += '    			</div>';
+                                content += '    			</div>';
+                                content += '    	</div>';
+                                content += '    </div>';
+
+                                //<!--待上传图片字符串与图片计数-->
+                                content += '<div id="img_class" style="display: none;"></div>';
+                                content += '<input type="text" name="num" id="num" value="0" style="display: none;">';
+                                //<!--待上传图片字符串与图片计数-->
+
+                                content += '    <div class="layui-form-item layui-form-text">';
+                                content += '    	<label class="layui-form-label">文本编辑</label>';
+                                content += '    	<div class="layui-input-inline">';
+                                //<!--编辑框-->
+                                // content +='				<div style="border:1px solid #ccc; border-radius:3px; box-shadow: 0px 5px 10px #E8E8E8;">';	
+                                // content +='					<div style="width:100%; height:50px; line-height:50px; background-color:#F4F4F4; border-bottom:1px solid #ccc;">';
+
+                                // content +='						<span>&nbsp;</span>';
+                                // content +='						<span id="uploadImg"><input id="btn2" type="file" size="1"><a href="###"><img src="wufangeditor/02.png" style="height:30px;" title="插入图片"></a></span>';
+                                // content +='					</div>';
+                                // content +='					<div style="width:100%; background-color:#FFF;">';
+                                // content +='						<div id="test"></div>';
+                                // content +='					</div>';
+                                // content +='					<div style="width:100%; height:50px; line-height:50px; background-color:#F4F4F4; border-top:1px solid #ccc;">';
+                                // content +='						<span>&nbsp;</span>';
+                                // content +='						<span><img id="btn"  src="wufangeditor/01.png" style="height:30px;" title="预览效果"></span>';			
+                                // content +='						<span>&nbsp;</span>';
+                                // content +='						<span><input id="ex" name="ex" type="checkbox" value="" title="自动排版"></span>';
+                                // content +='					</div>';
+                                // content +='				</div>';
+
+                                content += '<div id="editor" style="line-height:1.5;"></div>';
+                                content += '<span><img id="btn"  src="wufangeditor/01.png" style="height:30px;" title="预览效果"></span>';
+                                // content += '<label for="ex">是否排版</label>';
+                                // content += '<input id="ex" name="ex" type="checkbox" value="">';
+                                //<!--编辑框-->
+
+                                //<!--预览框-->
+                                content += '				<div id="content" style="border:1px solid #ccc; border-radius:3px; box-shadow: 0px 5px 10px #E8E8E8; min-height:300px; margin-top: 30px; padding:10px; display:none; width: 900px;"></div>';
+                                //<!--预览框-->
+                                content += '    	</div>';
+                                content += '    </div>';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '	    <div class="layui-input-block">';
+                                content += '	    	<input type="button" class="layui-btn layui-btn-warm" value="立即新增" onclick="button_add();">';
+                                content += '	    	<input type="button" class="layui-btn layui-btn-primary" value="关闭窗口" onclick="button_close();">';
+                                content += '	    </div>';
+                                content += '    </div>';
+
+                                content += '  	</form>';
+                                //弹出查看框
+                                layer.open({
+                                    type: 1,
+                                    title: '新增内容',
+                                    area: ['1000px', '700px'],
+                                    //offset: ['10px', '100px'],
+                                    content: content //这里content是一个普通的String
+                                });
+
+                                //绑定富文本编辑器DIV的ID
+                                // createBox("test");
+                                var editor = new RichEditor("#editor", {
+                                    width: 900,
+                                    height: 400,
+                                    toolBg: "#eee",
+                                    buttons: {
+                                        justifyLeft: {
+                                            title: "居左",
+                                            icon: "\uf036"
+                                        },
+                                        justifyCenter: {
+                                            title: "居中",
+                                            icon: "\uf037"
+                                        },
+                                        justifyRight: {
+                                            title: "居右",
+                                            icon: "\uf038"
+                                        },
+                                        insertImage: {
+                                            title: "插入图片",
+                                            icon: "\uf03e"
+                                        }
+                                    }
+                                });
+
+                                // 获取编辑的容器
+                                // var content = $('.re-editor')[0];
+                                $('.re-editor div').find('span').css('lineHeight', '1.5');
+
+                                $("#btn").on('click', function() {
+                                    $('#content').html($('.re-editor').html());
+                                    $('#content div').find('span').css('lineHeight', '1.5');
+                                    $('#content').show();
+
+                                });
+
+                                //获取班级对应的名称，下拉列表
+                                selectClass(function(result) { //   发布范围 选择班级
+                                    var obj = s("mySelect");
+                                    var lenBj = result.length;
+                                    for (var i = lenBj - 1; i >= 0; i--) {
+                                        var B_Class = result[i].NJMC;
+                                        var B_Name = result[i].BJMC;
+                                        var B_ID = result[i].BJID;
+                                        //obj.add(new Option(B_Class+B_Name+"班", B_ID));
+                                        obj.add(new Option(B_Name + "(" + B_Class + ")", B_ID));
+                                    }
+                                });
+
+                                form.render();
+                            }
+                            //更新数据
+                            ,
+                        UpdateData: function() {
+                                var checkStatus = table.checkStatus('DataListId'),
+                                    data = checkStatus.data;
+                                if (data.length == 1) {
+
+                                    var ID = data[0].ID;
+                                    var BJMC = data[0].BJMC;
+                                    var FBID = data[0].FBID;
+                                    var ZYMC = data[0].ZYMC;
+                                    var TJRY = data[0].TJRY;
+                                    var FBSJ = data[0].FBSJ;
+                                    //var SFFB = SFFB_str(data[0].SFFB);
+                                    var SFFB_STR = data[0].SFFB_STR;
+                                    var ZYTP = data[0].ZYTP;
+                                    var ZYTP_SM = data[0].ZYTP_SM;
+                                    var ZYNR = data[0].ZYNR;
+
+                                    if (ZYTP == "") {
+                                        ZYTP_SM = '<img src="image/dafault.jpg" width="100px" />';
+                                    }
+
+                                    if (data[0].SFFB == 1) {
+                                        var SFFB_CH1 = "checked";
+                                        var SFFB_CH2 = "";
+                                    } else {
+                                        var SFFB_CH1 = "";
+                                        var SFFB_CH2 = "checked";
+                                    }
+
+                                    var content = "";
+                                    content += '<br><br>';
+                                    content += '  	<form class="layui-form" action="" style="margin:10px;">';
+
+                                    content += '    <div class="layui-form-item">';
+                                    content += '	    <div class="layui-input-block">';
+                                    content += '	    	<input type="button" class="layui-btn layui-btn-warm" value="立即更新" onclick="button_update();">';
+                                    content += '	    	<input type="button" class="layui-btn layui-btn-primary" value="暂不更新" onclick="button_close();">';
+                                    content += '	    </div>';
+                                    content += '    </div>';
+
+                                    content += '    <div class="layui-form-item">';
+                                    content += '	    <div class="layui-inline">';
+                                    content += '	    	<label class="layui-form-label">序号</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="text" name="ID" lay-verify="ID" class="layui-input layui-bg-gray" value="' + ID + '" disabled>';
+                                    content += '	    	</div>';
+                                    content += '	    	<label class="layui-form-label">创建时间</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="text" name="FBSJ" lay-verify="FBSJ" class="layui-input layui-bg-gray" value="' + FBSJ + '" disabled>';
+                                    content += '	    	</div>';
+                                    content += '	    	<label class="layui-form-label">创建人</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="text" name="TJRY" lay-verify="TJRY" class="layui-input layui-bg-gray" value="' + TJRY + '" disabled>';
+                                    content += '	    	</div>';
+                                    content += '	    </div>';
+                                    content += '    </div>';
+
+                                    content += '    <div class="layui-form-item">';
+                                    content += '	    <div class="layui-inline">';
+                                    content += '	    	<label class="layui-form-label">班级</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="text" name="BJMC" lay-verify="BJMC" class="layui-input layui-bg-gray" value="' + BJMC + '" disabled>';
+                                    content += '	    	</div>';
+                                    content += '	    	<label class="layui-form-label">班级ID</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="text" name="FBID" lay-verify="FBID" class="layui-input layui-bg-gray" value="' + FBID + '" disabled>';
+                                    content += '	    	</div>';
+                                    content += '	    	<label class="layui-form-label">状态</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="radio" name="SFFB" value="1" title="发布" ' + SFFB_CH1 + '>';
+                                    content += '	    		<input type="radio" name="SFFB" value="0" title="不发布" ' + SFFB_CH2 + '>';
+                                    content += '	    	</div>';
+                                    content += '	    </div>';
+                                    content += '    </div>';
+
+                                    content += '    <div class="layui-form-item">';
+                                    content += '    	<label class="layui-form-label">标题</label>';
+                                    content += '    	<div class="layui-input-block">';
+                                    content += '    		<input type="text" name="ZYMC" lay-verify="title" class="layui-input" value="' + ZYMC + '">';
+                                    content += '    	</div>';
+                                    content += '    </div>';
+
+                                    content += '    <div class="layui-form-item">';
+                                    content += '    	<label class="layui-form-label">封面图片</label>';
+                                    content += '    	<div class="layui-input-inline">';
+                                    content += ZYTP_SM;
+                                    content += '    	</div>';
+                                    content += '    	<label class="layui-form-label">更换图片</label>';
+                                    content += '    	<div class="layui-input-inline">';
+                                    content += '    		<div id="img_list">';
+                                    content += '    			<div id="upload_aa">';
+                                    content += '    				<a class="a-upload">';
+                                    content += '    					<input type="file" name="medias" id="medias" onchange="imagePreview(this,1);">';
+                                    content += '    				</a>';
+                                    content += '    			</div>';
+                                    content += '    			</div>';
+                                    content += '    	</div>';
+                                    content += '    </div>';
+
+                                    //<!--待上传图片字符串与图片计数-->
+                                    content += '<div id="img_class" style="display: none;"></div>';
+                                    content += '<input type="text" name="num" id="num" value="0" style="display: none;">';
+                                    //<!--待上传图片字符串与图片计数-->
+
+                                    content += '    <div class="layui-form-item layui-form-text">';
+                                    content += '    	<label class="layui-form-label">文本编辑</label>';
+                                    content += '    	<div class="layui-input-inline">';
+                                    //<!--编辑框-->
+                                    // content += '				<div style="border:1px solid #ccc; border-radius:3px; box-shadow: 0px 5px 10px #E8E8E8;">';
+                                    // content += '					<div style="width:100%; height:50px; line-height:50px; background-color:#F4F4F4; border-bottom:1px solid #ccc;">';
+
+                                    // content += '						<span>&nbsp;</span>';
+                                    // content += '						<span id="uploadImg"><input id="btn2" type="file" size="1"><a href="###"><img src="wufangeditor/02.png" style="height:30px;" title="插入图片"></a></span>';
+                                    // content += '					</div>';
+                                    // content += '					<div style="width:100%; background-color:#FFF;">';
+                                    // content += '						<div id="test"></div>';
+                                    // content += '					</div>';
+                                    // content += '					<div style="width:100%; height:50px; line-height:50px; background-color:#F4F4F4; border-top:1px solid #ccc;">';
+                                    // content += '						<span>&nbsp;</span>';
+                                    // content += '						<span><img id="btn"  src="wufangeditor/01.png" style="height:30px;" title="预览效果"></span>';
+                                    // content += '						<span>&nbsp;</span>';
+                                    // content += '						<span><input id="ex" name="ex" type="checkbox" value="" title="自动排版"></span>';
+                                    // content += '					</div>';
+                                    // content += '				</div>';
+
+                                    content += '<div id="editor" style="line-height:1.5;"></div>';
+                                    content += '<span><img id="btn"  src="wufangeditor/01.png" style="height:30px;" title="预览效果"></span>';
+                                    // content += '<label for="ex">是否排版</label>';
+                                    // content += '<input id="ex" name="ex" type="checkbox" value="">';
+                                    //<!--编辑框-->
+
+                                    //<!--预览框-->
+                                    content += '				<div id="content" style="border:1px solid #ccc; border-radius:3px; box-shadow: 0px 5px 10px #E8E8E8; min-height:300px; margin-top: 30px; padding:10px; display:none; width: 900px;"></div>';
+                                    //<!--预览框-->
+                                    content += '    	</div>';
+                                    content += '    </div>';
+
+                                    content += '    <div class="layui-form-item">';
+                                    content += '	    <div class="layui-input-block">';
+                                    content += '	    	<input type="button" class="layui-btn layui-btn-warm" value="立即更新" onclick="button_update();">';
+                                    content += '	    	<input type="button" class="layui-btn layui-btn-primary" value="暂不更新" onclick="button_close();">';
+                                    content += '	    </div>';
+                                    content += '    </div>';
+
+                                    content += '  	</form>';
+                                    //弹出查看框
+                                    layer.open({
+                                        type: 1,
+                                        title: '编辑内容',
+                                        area: ['1000px', '700px'],
+                                        //offset: ['10px', '100px'],
+                                        content: content //这里content是一个普通的String
+                                    });
+
+                                    //绑定文本编辑器DIV的ID
+                                    var editor = new RichEditor("#editor", {
+                                        width: 900,
+                                        height: 400,
+                                        toolBg: "#eee",
+                                        buttons: {
+                                            justifyLeft: {
+                                                title: "居左",
+                                                icon: "\uf036"
+                                            },
+                                            justifyCenter: {
+                                                title: "居中",
+                                                icon: "\uf037"
+                                            },
+                                            justifyRight: {
+                                                title: "居右",
+                                                icon: "\uf038"
+                                            },
+                                            insertImage: {
+                                                title: "插入图片",
+                                                icon: "\uf03e"
+                                            }
+                                        }
+                                    });
+
+                                    // 获取编辑的容器
+                                    $('.re-editor div').find('span').css('lineHeight', '1.5');
+                                    $('.re-editor').html(ZYNR);
+                                    // s("txtBox").innerHTML = ZYNR;
+                                    $("#btn").on('click', function() {
+                                        $('#content').html($('.re-editor').html());
+                                        $('#content div').find('span').css('lineHeight', '1.5');
+                                        $('#content').show();
+                                    });
+                                    // createBox("test");
+                                    // s("txtBox").innerHTML = ZYNR;
+                                    form.render();
+                                } else if (data.length == 0) {
+                                    layer.msg('请勾选需要操作的数据');
+                                } else {
+                                    layer.msg('本操作只可勾选单条数据');
+                                }
+
+                            }
+                            //查看数据详情
+                            ,
+                        LookData: function() {
+
+                                var checkStatus = table.checkStatus('DataListId'),
+                                    data = checkStatus.data;
+                                if (data.length == 1) {
+                                    var ID = data[0].ID;
+                                    var BJMC = data[0].BJMC;
+                                    var FBID = data[0].FBID;
+                                    var ZYMC = data[0].ZYMC;
+                                    var TJRY = data[0].TJRY;
+                                    var FBSJ = data[0].FBSJ;
+                                    var SFFB = SFFB_str_s(data[0].SFFB);
+                                    var SFFB_STR = data[0].SFFB_STR;
+                                    var ZYTP = data[0].ZYTP;
+                                    var ZYTP_SM = data[0].ZYTP_SM;
+                                    var ZYNR = data[0].ZYNR;
+                                    if (ZYTP == "") {
+                                        ZYTP_SM = '<img src="image/dafault.jpg" width="100px" />';
+                                    }
+                                    var content = "";
+                                    content += '<br><br>';
+                                    content += '  	<form class="layui-form" action="" style="margin:10px;">';
+
+                                    content += '    <div class="layui-form-item">';
+                                    content += '	    <div class="layui-inline">';
+                                    content += '	    	<label class="layui-form-label">序号</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="text" name="ID" lay-verify="ID" class="layui-input layui-bg-gray" value="' + ID + '" disabled>';
+                                    content += '	    	</div>';
+                                    content += '	    	<label class="layui-form-label">创建时间</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="text" name="FBSJ" lay-verify="FBSJ" class="layui-input layui-bg-gray" value="' + FBSJ + '" disabled>';
+                                    content += '	    	</div>';
+                                    content += '	    	<label class="layui-form-label">创建人</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="text" name="TJRY" lay-verify="TJRY" class="layui-input layui-bg-gray" value="' + TJRY + '" disabled>';
+                                    content += '	    	</div>';
+                                    content += '	    </div>';
+                                    content += '    </div>';
+
+                                    content += '    <div class="layui-form-item">';
+                                    content += '	    <div class="layui-inline">';
+                                    content += '	    	<label class="layui-form-label">班级</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="text" name="BJMC" lay-verify="BJMC" class="layui-input layui-bg-gray" value="' + BJMC + '" disabled>';
+                                    content += '	    	</div>';
+                                    content += '	    	<label class="layui-form-label">班级ID</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="text" name="FBID" lay-verify="FBID" class="layui-input layui-bg-gray" value="' + FBID + '" disabled>';
+                                    content += '	    	</div>';
+                                    content += '	    	<label class="layui-form-label">状态</label>';
+                                    content += '	    	<div class="layui-input-inline">';
+                                    content += '	    		<input type="text" name="SFFB" lay-verify="SFFB" class="layui-input layui-bg-gray" value="' + SFFB + '" disabled>';
+                                    content += '	    	</div>';
+                                    content += '	    </div>';
+                                    content += '    </div>';
+
+                                    content += '    <div class="layui-form-item">';
+                                    content += '    	<label class="layui-form-label">标题</label>';
+                                    content += '    	<div class="layui-input-block">';
+                                    content += '    		<input type="text" name="ZYMC" lay-verify="title" class="layui-input layui-bg-gray" value="' + ZYMC + '" disabled>';
+                                    content += '    	</div>';
+                                    content += '    </div>';
+
+                                    content += '    <div class="layui-form-item">';
+                                    content += '    	<label class="layui-form-label">封面图片</label>';
+                                    content += '    	<div class="layui-input-block">';
+                                    content += ZYTP_SM;
+                                    content += '    	</div>';
+                                    content += '    </div>';
+
+                                    content += '    <div class="layui-form-item">';
+                                    content += '    	<label class="layui-form-label">文本内容</label>';
+                                    content += '    	<div class="layui-input-block">';
+                                    content += ZYNR;
+                                    content += '    	</div>';
+                                    content += '    </div>';
+
+                                    content += '  	</form>';
+
+                                    //弹出查看框
+                                    layer.open({
+                                        type: 1,
+                                        title: '查看内容',
+                                        area: ['1000px', '700px'],
+                                        //offset: ['50px', '200px'],
+                                        content: content //这里content是一个普通的String
+                                    });
+                                } else if (data.length == 0) {
+                                    layer.msg('请勾选需要操作的数据');
+                                } else {
+                                    layer.msg('本操作只可勾选单条数据');
+                                }
+                            }
+                            //按选择删除数据
+                            ,
+                        DelCheckData: function(obj) {
+
+                                //按选择删除数据
+                                var checkStatus = table.checkStatus('DataListId'),
+                                    data = checkStatus.data;
+                                if (data.length == 1) {
+                                    var ID = data[0].ID;
+                                    var ZYMC = data[0].ZYMC;
+                                    var FBID = data[0].FBID;
+                                    var SFFB = data[0].SFFB;
+                                    layer.confirm('<span style="color:#f00;">确定要删除？</span><br>序号：' + ID + '<br>标题：' + ZYMC, {
+                                        btn: ['确定删除', '暂不删除'] //可以无限个按钮		  	  
+                                    }, function(index, layero) {
+                                        //按钮【按钮一】的回调
+                                        del_bjgg(ID, FBID, SFFB);
+
+                                        //无刷新删除DOM结构暂未解决
+                                        //checkStatus.del(); //删除对应行（tr）的DOM结构，并更新缓存
+						                setTimeout(function() {
+						                    layer.closeAll();
+						                    window.location.reload();
+						                }, 1000);
+						                
+                                    }, function(index) {
+                                        //按钮【按钮二】的回调	
+                                        layer.msg('您已取消了相关操作');
+                                    });
+
+                                } else if (data.length == 0) {
+                                    layer.msg('请勾选需要操作的数据');
+                                } else {
+                                    layer.msg('本操作只可勾选单条数据');
+                                }
+                            }
+                            //查询数据
+                            ,
+                        SelectData: function() {
+                                //
+                                var content = "";
+                                content += '<br><br>';
+                                content += '  	<form class="layui-form" action="" style="margin:10px;">';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '	    <div class="layui-inline">';
+                                content += '	    	<label class="layui-form-label">发布区域</label>';
+                                content += '	    	<div id="layui-input-inline" class="layui-input-inline">';
+                                content += '	    		<select id="mySelect" name="city">';
+                                content += '	    			<option value="">全部</option>';
+                                content += '	    		</select>';
+                                content += '	    	</div>';
+                                content += '	    	<label class="layui-form-label">状态</label>';
+                                content += '	    	<div id="layui-input-inline" class="layui-input-inline">';
+                                content += '	    		<select id="mySFFB" name="SFFB">';
+                                content += '	    			<option value="">全部</option>';
+                                content += '	    			<option value="0">未发布</option>';
+                                content += '	    			<option value="1">已发布</option>';
+                                content += '	    		</select>';
+                                content += '	    	</div>';
+                                content += '	    </div>';
+                                content += '    </div>';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '	    <div class="layui-inline">';
+                                content += '	    	<label class="layui-form-label">标题</label>';
+                                content += '	    	<div id="layui-input-inline" class="layui-input-inline">';
+                                content += '    			<input type="text" name="ZYMC" lay-verify="title" class="layui-input" value="" placeholder="标题模糊查找">';
+                                content += '	    	</div>';
+                                content += '	    	<label class="layui-form-label">发布人</label>';
+                                content += '	    	<div id="layui-input-inline" class="layui-input-inline">';
+                                content += '    			<input type="text" name="TJRY" lay-verify="title" class="layui-input" value="" placeholder="发布人模糊查找">';
+                                content += '	    	</div>';
+                                content += '	    </div>';
+                                content += '    </div>';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '	    <div class="layui-inline">';
+                                content += '	    	<label class="layui-form-label">时间（起）</label>';
+                                content += '	    	<div id="layui-input-inline" class="layui-input-inline">';
+                                content += '    			<input type="text" class="layui-input" id="FBSJ_a" placeholder="yyyy-MM-dd HH:mm:ss">';
+                                content += '	    	</div>';
+                                content += '	    	<label class="layui-form-label">时间（止）</label>';
+                                content += '	    	<div id="layui-input-inline" class="layui-input-inline">';
+                                content += '    			<input type="text" class="layui-input" id="FBSJ_b" placeholder="yyyy-MM-dd HH:mm:ss">';
+                                content += '	    	</div>';
+                                content += '	    </div>';
+                                content += '    </div>';
+
+
+                                content += '    <div class="layui-form-item">';
+                                content += '	    <div class="layui-input-block">';
+                                content += '	    	<input type="button" class="layui-btn layui-btn-warm" value="立即查询" onclick="button_select();">';
+                                content += '	    	<input type="button" class="layui-btn layui-btn-primary" value="关闭窗口" onclick="button_close();">';
+                                content += '	    </div>';
+                                content += '    </div>';
+
+                                content += '  	</form>';
+                                //弹出查看框
+                                layer.open({
+                                    type: 1,
+                                    title: '查询内容',
+                                    area: ['1000px', '700px'],
+                                    //offset: ['10px', '100px'],
+                                    content: content //这里content是一个普通的String
+                                });
+
+                                //获取班级对应的名称，下拉列表
+                                selectClass(function(result) { //   发布范围 选择班级
+                                    var obj = s("mySelect");
+                                    var lenBj = result.length;
+                                    for (var i = lenBj - 1; i >= 0; i--) {
+                                        var B_Class = result[i].NJMC;
+                                        var B_Name = result[i].BJMC;
+                                        var B_ID = result[i].BJID;
+                                        //obj.add(new Option(B_Class+B_Name+"班", B_ID));
+                                        obj.add(new Option(B_Name + "(" + B_Class + ")", B_ID));
+                                    }
+                                });
+
+                                form.render();
+
+                                layui.use('laydate', function() {
+                                    var laydate = layui.laydate;
+                                    //时间选择器
+                                    laydate.render({
+                                        elem: '#FBSJ_a',
+                                        type: 'datetime'
+                                    });
+                                    laydate.render({
+                                        elem: '#FBSJ_b',
+                                        type: 'datetime'
+                                    });
+                                });
+
+                            }
+                            //刷新
+                            ,
+                        PageReload: function() {                       	
+                            window.location.reload()
+                        }
+                    };
+
+                //监听工具栏对应操作
+                $('.layui-btn').on('click', function(obj) {
+                    var type = $(this).data('type');
+                    active[type] ? active[type].call(this) : '';
+                });
+
+            });
+        }
+
+        //表单提交新增函数
+        function button_add() {
+            //初始化参数
+            var ZYLB_CFG = GetKeyZYLB(getQueryString("CODE"));
+            var ZYFL_CFG = GetKeyName_sys(getQueryString("CODE"));
+
+            var FBFW = 4;
+            var ZYLB = ZYLB_CFG;
+            var ZYFL = ZYFL_CFG;
+            var ZYMC = $("input[name='ZYMC']").val();
+            var FBID = s("mySelect").value;
+            var ZYTP = s("img_class").innerHTML;
+            var SFFB = $("input[name='SFFB']:checked").val();
+            // if (s('ex').checked == true) {
+            // var divs = s("txtBox").getElementsByTagName('div');
+            //     var divs = $('.re-editor')[0].getElementsByTagName('div');
+            //     var htmldiv = '';
+            //     // 遍历每个div 前面添加空格
+            //     var kongge = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            //     for (var i = 0; i < divs.length; i++) {
+            //         var item = divs[i];
+            //         var html = item.innerHTML;
+            //         html = html.replace(/(&nbsp;)|(^\s+)|(\s+$)/ig, "");
+            //         item.innerHTML = kongge + html;
+            //     }
+            // } else {
+            // var divs = s("txtBox").getElementsByTagName('div');
+            var divs = $('.re-editor')[0].getElementsByTagName('div');
+            var htmldiv = '';
+            // 遍历每个div 前面添加空格
+            var kongge = "";
+            for (var i = 0; i < divs.length; i++) {
+                var item = divs[i];
+                var html = item.innerHTML;
+                html = html.replace(/(&nbsp;)|(^\s+)|(\s+$)/ig, "");
+                item.innerHTML = kongge + html;
+            }
+            // }
+            // var ZYNR = s("txtBox").innerHTML;
+            var ZYNR = $('.re-editor').html();
+
+            //表单验证模块
+            try {
+                if (FBID == "") throw "请选择发布区域";
+                if (ZYMC == "") throw "标题不能为空";
+                if (ZYMC.length > 30) throw "标题过长";
+                if (ZYNR == "") throw "文本内容不能为空";
+            } catch (err) {
+                layer.msg(err);
+                return false;
+            }
+
+            //调用新增接口
+            var res = add_bjgg(ZYMC, ZYLB, ZYNR, FBFW, FBID, ZYTP, ZYFL, SFFB);
+            //
+            if (res == true) {
+                layer.msg('操作成功');
+                setTimeout(function() {
+                    layer.closeAll();
+                    window.location.reload();
+                }, 1000);
+            } else {
+                layer.msg(res);
+            }
+
+        }
+
+        //表单提交更新函数
+        function button_update() {
+            var ID = $("input[name='ID']").val();
+            var FBID = $("input[name='FBID']").val();
+            var ZYMC = $("input[name='ZYMC']").val();
+            var ZYTP = s("img_class").innerHTML;
+            var SFFB = $("input[name='SFFB']:checked").val();
+            // if (s('ex').checked == true) {
+            //     var divs = s("txtBox").getElementsByTagName('div');
+            //     var htmldiv = '';
+            //     // 遍历每个div 前面添加空格
+            //     var kongge = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            //     for (var i = 0; i < divs.length; i++) {
+            //         var item = divs[i];
+            //         var html = item.innerHTML;
+            //         html = html.replace(/(&nbsp;)|(^\s+)|(\s+$)/ig, "");
+            //         item.innerHTML = kongge + html;
+            //     }
+            // } else {
+            // var divs = s("txtBox").getElementsByTagName('div');
+            var divs = $('.re-editor')[0].getElementsByTagName('div');
+            var htmldiv = '';
+            // 遍历每个div 前面添加空格
+            var kongge = "";
+            for (var i = 0; i < divs.length; i++) {
+                var item = divs[i];
+                var html = item.innerHTML;
+                html = html.replace(/(&nbsp;)|(^\s+)|(\s+$)/ig, "");
+                item.innerHTML = kongge + html;
+            }
+            // }
+            var ZYNR = $('.re-editor').html();
+
+            //表单验证模块
+            try {
+                if (FBID == "") throw "请选择发布区域";
+                if (ZYMC == "") throw "标题不能为空";
+                if (ZYMC.length > 30) throw "标题过长";
+                if (ZYNR == "") throw "文本内容不能为空";
+            } catch (err) {
+                layer.msg(err);
+                return false;
+            }
+            
+            //调用更新接口
+            var res = edit_bjgg(ID, FBID, ZYMC, ZYNR, ZYTP, SFFB);
+            if (res == true) {
+                layer.msg('操作成功');
+                setTimeout(function() {
+                    layer.closeAll();
+                    window.location.reload();
+                }, 1000);
+            } else {
+                layer.msg(res);
+            }
+        }
+
+        //表单提交查询函数
+        function button_select() {
+            var ZYMC_sl = $("input[name='ZYMC']").val();
+            var FBID_sl = s("mySelect").value;
+            var SFFB_sl = s("mySFFB").value;
+            var TJRY_sl = $("input[name='TJRY']").val();
+            var FBSJ_a_sl = $("input[id='FBSJ_a']").val();
+            var FBSJ_b_sl = $("input[id='FBSJ_b']").val();
+
+            if (FBSJ_a_sl != "" && FBSJ_b_sl != "") {
+                //权限验证模块
+                try {
+                    if (FBSJ_a_sl >= FBSJ_b_sl) throw "时间（起）必须小于时间（止）";
+                } catch (err) {
+                    //打印验证提示
+                    var responseInfo = err;
+                    layer_open('信息提示', responseInfo);
+                    return false;
+                }
+            }
+                        
+            onload_list(FBID_sl, SFFB_sl, ZYMC_sl, TJRY_sl, FBSJ_a_sl, FBSJ_b_sl);
+				setTimeout(function() {
+                    layer.closeAll();
+                }, 1000);            
+        }
+
+        //暂不更新
+        function button_close() {
+            layer.closeAll();
+        }
+    </script>
+    <!-- <script type="text/javascript" src="js/wufangeditor.js"></script> -->
+</body>
+
+</html>

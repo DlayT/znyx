@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>中南附属一小登录</title>
+    <link rel="stylesheet" href="layui225/css/layui.css" media="all">
+    <link rel="stylesheet" href="swiper/css/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+
+<body class="layui-bg-black" style="color: #000000 !important;">
+    <!--头部LOGO-->
+    <div class="top-nav">
+        <img src="image/logo2.png" alt="">
+    </div>
+    <!--轮播背景-->
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide"><img src="image/banner1.jpg" height="100%" width="100%"></div>
+            <div class="swiper-slide"><img src="image/banner2.jpg" height="100%" width="100%"></div>
+        </div>
+    </div>
+    <!--登录框-->
+    <div class="inputdiv" style="opacity: 0.8;">
+        <div class="title" style="color: #009688">
+            欢迎登录信息管理平台
+        </div>
+
+        <div style="padding:20px;">
+            <div class="layui-form-item">
+                <div class="layui-input-100">
+                    <input type="text" id="username" name="username" required placeholder="登录名" class="layui-input">
+                </div>
+            </div>
+            <div class="hb10"></div>
+            <div class="layui-form-item">
+                <div class="layui-input-100">
+                    <input type="password" id="password" name="password" required placeholder="密码" class="layui-input">
+                </div>
+            </div>
+            <div class="hb10"></div>
+            <div class="hb10"></div>
+            <div class="layui-form-item">
+                <div class="layui-input-100">
+                    <button style="width:100%; background-color:#199F93; height:40px; color:#FFF; border: 1px #199F93 solid;" onClick="login_submit();">登录</button>
+                </div>
+                <div style="height: 30px;"></div>
+                <!-- <div class="layui-input-100">
+                    <button style="width:100%; background-color:#5CBDAA; height:40px; color:#FFF; border: 1px #5CBDAA solid;" onClick="jump_jxgt();">家校沟通首页</button>
+                </div> -->
+            </div>
+        </div>
+
+    </div>
+    <!--底部信息-->
+    <br><br><br>
+    <div style="text-align:center; font-size:14px; color:#999; height:25px; line-height:25px;">友情链接 : 湖南省长沙市</div>
+    <div style="text-align:center; font-size:14px; color:#999; height:25px; line-height:25px;">同升湖 版权所有 © 2008-<span id="DateYear"><!--当前年份--></span> 湘ICP备8888888</div>
+    <div style="text-align:center; font-size:12px; color:#999; height:25px; line-height:25px;">Powered by WuFang 1.0.0</div>
+
+    <!--引用相关JS-->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/md5.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/public.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script src="layui225/layui.all.js"></script>
+    <script>
+        /*点击登录按钮，获取相应参数，实现登录验证*/
+        function login_submit() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            //表单初步验证模块
+            try {
+                if (username == "") throw "用户名/手机不能为空";
+                if (username.length != 11 && username.length != 12) throw "用户名/手机长度不正确";
+                if (password == "") throw "密码不能为空";
+                if (password.length < 6) throw "密码长度不正确";
+            } catch (err) {
+                //打印验证提示
+                var responseInfo = err;
+                layer_open('信息提示', responseInfo);
+                return false;
+            }
+            //表单初步验证通过，直接接口验证
+            login(username, hex_md5(password));
+        }
+
+        /*跳转到家校沟通网*/
+        function jump_jxgt() {
+            window.location.href = "../jxgt/index.html";
+            return false;
+        }
+    </script>
+
+    <script src="swiper/js/swiper.min.js"></script>
+    <script>
+        //显示当前年份
+        $("#DateYear").html(DateYear());
+
+        /*首页轮播图*/
+        var mySwiper = new Swiper('.swiper-container', {
+            autoplay: 5000, //可选选项，自动滑动
+            loop: true,
+        })
+    </script>
+</body>
+
+</html>

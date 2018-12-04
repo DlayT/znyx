@@ -1,0 +1,397 @@
+<!--
+	业务页面
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <!--无需标题-->
+    <title>中南附小-学校介绍</title>
+    <!--LayUi框架CSS-->
+    <link rel="stylesheet" href="layui225/css/layui.css" media="all">
+    <!--项目CSS-->
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!--editor编辑器字体-->
+    <link rel="stylesheet" href="editor/fontAwesome/css/font-awesome.min.css">
+    <!--editor编辑器CSS-->
+    <link rel="stylesheet" href="editor/richEditor.css">
+    <!--JQ-->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <!--MD5处理JS-->
+    <script type="text/javascript" src="js/md5.js"></script>
+    <!--项目配置JS-->
+    <script type="text/javascript" src="js/config.js"></script>
+    <!--公共通用JS-->
+    <script type="text/javascript" src="js/public.js"></script>
+    <!--接口交互JS-->
+    <script type="text/javascript" src="js/api.js"></script>
+    <!--LayUi框架JS-->
+    <script src="layui225/layui.js"></script>
+    <!--editor编辑器JS-->
+    <script src="editor/richEditor.min.loc.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./ueditor/ueditor.all.min.js"></script>
+    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+    <script type="text/javascript" charset="utf-8" src="./ueditor/lang/zh-cn/zh-cn.js"></script>
+    <style>
+        body {
+            padding: 0px;
+        }
+        
+        img {
+            max-width: 100%;
+        }
+        
+        .layui-table img {
+            max-width: none;
+        }
+        
+        .re-container {
+            color: #000;
+        }
+        
+        .re-editor img {
+            max-width: 100%;
+        }
+        
+        .re-editor span {
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<!-- <body onload="onload_list();Btn_defined();"> -->
+
+<body onload="onload_list();">
+
+    <div class="layui-btn-group">
+        <button class="layui-btn BIG" data-type="AddNewData"><i class="layui-icon">&#xe654;</i> 新增</button>
+        <button class="layui-btn" data-type="SelectData"><i class="layui-icon">&#xe615;</i> 查询</button>
+        <button class="layui-btn" data-type="PageReload"><i class="layui-icon">&#x1002;</i> 刷新</button>
+    </div>
+    <hr class="layui-bg-green">
+    <table id="DataList" lay-filter="demo">
+        <div id="aaaaa" style="position: fixed; margin: 6px;">数据加载中...</div>
+    </table>
+</body>
+<script type="text/javascript">
+    // 配置自定义模块
+    //config的设置是全局的
+    layui.config({
+        base: './layui225/ext/' //假设这是你存放拓展模块的根目录
+    }).extend({ //设定模块别名
+        extra: 'extra' //如果 mymod.js 是在根目录，也可以不用设定别名
+    });
+    //相关操作函数   code的值
+    var CFG_CODE = 94;
+    //字段名对应中文
+    var PERSON = {
+        //表格列表字段
+        a0: {
+            SID: "id",
+            SZH: "序号"
+        },
+        a1: {
+            SID: "sort",
+            SZH: "排序"
+        },
+        a2: {
+            SID: "title",
+            SZH: "标题"
+        },
+        a3: {
+            SID: "description",
+            SZH: "描述"
+        },
+        a4: {
+            SID: "cover",
+            SZH: "封面"
+        },
+        a5: {
+            SID: "author",
+            SZH: "创建人"
+        },
+        a6: {
+            SID: "creattime",
+            SZH: "创建时间"
+        },
+        a7: {
+            SID: "state",
+            SZH: "状态"
+        },
+
+        //重写后
+        a8: {
+            SID: "cover_ck",
+            SZH: "封面"
+        },
+        a9: {
+            SID: "STATE_STR",
+            SZH: "状态"
+        },
+        a10: {
+            SID: "content_STR",
+            SZH: "内容"
+        },
+    };
+    // 发布的状态字段 （单选部分）
+    var PERSONSTATE = [{
+        STITLE: "发布",
+        SVALUE: 1
+    }, {
+        STITLE: "不发布",
+        SVALUE: 0
+    }, ];
+    // 搜索部分的状态字段（下拉框部分）
+    var PERSONSTATESELECT = [{
+        STITLE: "全部",
+        SVALUE: ""
+    }, {
+        STITLE: "发布",
+        SVALUE: 1
+    }, {
+        STITLE: "不发布",
+        SVALUE: 0
+    }, ];
+
+    //加载数据表格
+    function onload_list(title, state, FBSJ_a_sl, FBSJ_b_sl) {
+
+        //初始化参数
+        if (EmptySimple(state)) {
+            var state = "99";
+        }
+
+        layui.use(['table', 'extra', 'form'], function() {
+            var table = layui.table;
+            var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+            var extra = layui.extra;
+
+            var tableLoad = onloadData(CFG_CODE, title, state, FBSJ_a_sl, FBSJ_b_sl, table, form, extra);
+
+            //绑定单列操作按钮//////////////////////////////////	
+            var options = {
+                title: '弹框', // 弹窗标题
+                code: CFG_CODE, // 页面对应的code 编码      
+                area: ['500px', '500px'], // 弹窗大小
+                tableLoadFunc: tableLoad
+            };
+            extra.init(options);
+            //方法级渲染------绑定表格数据////////////////////////////////
+        });
+
+    }
+
+
+    //表单提交新增函数
+    function button_add() {
+        //初始化参数
+        var title = $("input[name='title']").val();
+        var description = $("textarea[name='description']").val();
+        var cover = $('.a-upload').attr('src');
+        var state = $("input[name='state']:checked").val();
+        var sort = $("input[name='sort']").val();
+        // 编辑器内容
+        var content_STR = UE.getEditor('editor').getContent();
+
+        //表单验证模块
+        try {
+            if (title == "") throw "标题不能为空";
+            if (title.length > 30) throw "标题过长";
+            if (content_STR == "") throw "文本内容不能为空";
+        } catch (err) {
+            layer.msg(err);
+            return false;
+        }
+
+        //调用新增接口
+        var res = add_article(CFG_CODE, title, description, cover, content_STR, state, sort);
+        //
+        if (res == true) {
+            layer.msg('操作成功');
+            setTimeout(function() {
+                layer.closeAll();
+                window.location.reload();
+            }, 500);
+        } else {
+            layer.msg(res);
+        }
+
+    }
+
+    //表单提交更新函数  
+    function button_update() {
+        var id = $("input[name='id']").val();
+        var title = $("input[name='title']").val();
+        var description = $("textarea[name='description']").val();
+        var cover = $('.a-upload').attr('src');
+        var state = $("input[name='state']:checked").val();
+        var sort = $("input[name='sort']").val();
+        // 编辑器内容
+        var content_STR = UE.getEditor('editor').getContent();
+
+        //表单验证模块
+        try {
+            if (id == "") throw "序号不能为空";
+            if (title == "") throw "标题不能为空";
+            if (title.length > 30) throw "标题过长";
+            if (content_STR == "") throw "文本内容不能为空";
+        } catch (err) {
+            layer.msg(err);
+            return false;
+        }
+
+        //调用更新接口
+        var res = edit_article(id, CFG_CODE, title, description, cover, content_STR, state, sort);
+        if (res == true) {
+            layer.msg('操作成功');
+            setTimeout(function() {
+                layer.closeAll();
+                window.location.reload();
+            }, 1000);
+        } else {
+            layer.msg(res);
+        }
+    }
+
+    //表单提交查询函数
+    function button_select() {
+        var title_sl = $("input[name='title']").val();
+        var state_sl = s("mystate").value;
+        var FBSJ_a_sl = $("input[id='FBSJ_a']").val();
+        var FBSJ_b_sl = $("input[id='FBSJ_b']").val();
+
+        layui.use(['table'], function() {
+            var table = layui.table;
+            var form = layui.form;
+            onloadData(CFG_CODE, title_sl, state_sl, FBSJ_a_sl, FBSJ_b_sl, table, form);
+        });
+
+        // onload_list(title_sl, state_sl, FBSJ_a_sl, FBSJ_b_sl);
+        setTimeout(function() {
+            layer.closeAll();
+        }, 1000);
+    }
+
+    //暂不更新
+    function button_close(flag) {
+        if (flag) {
+            // 销毁编辑器
+            UE.getEditor('editor').destroy();
+        }
+        layer.closeAll();
+    }
+
+    // 数据表格的渲染
+    function onloadData(CFG_CODE, title, state, FBSJ_a_sl, FBSJ_b_sl, table, form, extra) {
+
+        var total = list_article(CFG_CODE, title, state, FBSJ_a_sl, FBSJ_b_sl);
+
+        //数据重写////////////////////////////////
+        if (NoEmptySimple(total)) {
+            //接口数据重写
+            total.forEach(function(Value, index) {
+                if (NoEmptySimple(Value.cover)) {
+                    Value.cover_ck = "预览";
+                }
+                Value.STATE_STR = state_str(Value.state);
+                Value.content_STR = Value.content;
+            });
+        }
+        //数据重写////////////////////////////////
+        tableLoad(total);
+        //方法级渲染------绑定表格数据////////////////////////////////
+
+        function tableLoad(data) {
+            window.demoTable = table.render({
+                even: true, //开启隔行背景
+                page: true, //是否显示分页
+                limits: [14, 30, 50, 100, 500], //选择每页显示数
+                limit: 14, //每页默认显示的数量
+                loading: true, //请求数据时，是否显示loading,需URL请求时生效
+                id: 'DataListId', //ID  
+                elem: '#DataList',
+                data: data, // 通过接口获取到的数据 total
+                height: 670,
+                cols: [ //标题栏
+                    [{ //设定空隙列space: true, 是否固定列fixed: false
+                        space: true,
+                        fixed: true
+                    }, { //设定复选框列,复选框默认全部选中
+                        checkbox: true,
+                        LAY_CHECKED: false,
+                        fixed: 'left'
+                    }, {
+                        field: PERSON.a0.SID,
+                        title: '<strong>' + PERSON.a0.SZH + '</strong>',
+                        minWidth: 100,
+                        sort: true,
+                        type: 'asc',
+                        fixed: 'left'
+                    }, {
+                        field: PERSON.a1.SID,
+                        title: '<strong>' + PERSON.a1.SZH + '</strong>',
+                        minWidth: 100,
+                        sort: true
+                    }, {
+                        field: PERSON.a2.SID,
+                        title: '<strong>' + PERSON.a2.SZH + '</strong>',
+                        minWidth: 300,
+                        sort: true
+                    }, {
+                        field: PERSON.a3.SID,
+                        title: '<strong>' + PERSON.a3.SZH + '</strong>',
+                        minWidth: 300,
+                        sort: true
+                    }, { // 封面预览
+                        field: PERSON.a8.SID,
+                        title: '<strong>' + PERSON.a8.SZH + '</strong>',
+                        minWidth: 80,
+                        sort: true,
+                        event: 'setSign',
+                        style: 'cursor: pointer;color: #FF8040;'
+                    }, {
+                        field: PERSON.a5.SID,
+                        title: '<strong>' + PERSON.a5.SZH + '</strong>',
+                        minWidth: 100,
+                        sort: true
+                    }, {
+                        field: PERSON.a6.SID,
+                        title: '<strong>' + PERSON.a6.SZH + '</strong>',
+                        minWidth: 200,
+                        sort: true
+                    }, {
+                        field: PERSON.a9.SID,
+                        title: '<strong>' + PERSON.a9.SZH + '</strong>',
+                        minWidth: 80,
+                        sort: true,
+                        fixed: 'right'
+                    }, {
+                        title: '<strong>操作</strong>',
+                        minWidth: 160,
+                        sort: true,
+                        fixed: 'right',
+                        toolbar: '#barDemo'
+                    }]
+                ],
+                done: function(res, curr, count) {
+                    //加载成功后
+                    TableLoadInfo(res, curr, count);
+                }
+            });
+        }
+
+        return tableLoad;
+    }
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+</html>

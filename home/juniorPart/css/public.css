@@ -1,0 +1,249 @@
+/* 公共样式 */
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+ul {
+    list-style: none;
+}
+
+.clearfix:after {
+    content: " ";
+    display: block;
+    clear: both;
+    height: 0;
+}
+
+.clearfix {
+    zoom: 1;
+}
+
+a:hover,
+a:active,
+a:link {
+    text-decoration: none;
+}
+
+
+/* 顶部的样式 */
+
+.top-tool {
+    background: url("../images/topBg.png") no-repeat;
+    height: 750px;
+    width: 100%;
+}
+
+.tool-1 {
+    width: 1200px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.tool-1>img {
+    width: 85px;
+    position: relative;
+    top: 20px;
+    left: -10px;
+}
+
+.titles {
+    position: absolute;
+    left: 80px;
+    top: 32px;
+    color: #fff;
+}
+
+.titles h2 {
+    font: 400 35px/45px "Microsoft YaHei";
+}
+
+.titles span {
+    font-size: 18px;
+}
+
+nav {
+    width: 1200px;
+    margin: 35px auto 0;
+}
+
+.zh1 {
+    font-size: 16px;
+}
+
+
+/* 样式覆盖 */
+
+.layui-nav {
+    background-color: transparent;
+    padding: 0px;
+}
+
+.myNav {
+    width: 1004px;
+    float: right;
+}
+
+.layui-nav .layui-nav-item {
+    line-height: 26px;
+    width: 12.5%;
+    text-align: center;
+}
+
+.layui-nav .layui-nav-item a {
+    padding: 0px 9px;
+    /* background-color: #0C82CA; */
+    border-radius: 6px;
+    color: #000;
+    font-family: 'Microsoft YaHei';
+}
+
+.layui-nav .layui-nav-item a:hover,
+.layui-nav .layui-this a {
+    color: #fff;
+    background-color: #0c82ca;
+}
+
+.layui-nav .layui-this:after,
+.layui-nav-bar,
+.layui-nav-tree .layui-nav-itemed:after {
+    height: 0;
+    background-color: transparent;
+    transition: all 0;
+}
+
+.layui-nav .layui-nav-more {
+    border-color: transparent;
+}
+
+.layui-nav-child {
+    top: 28px;
+    background-color: rgba(255, 255, 255, .5);
+}
+
+.layui-nav .layui-nav-child.layui-anim a {
+    color: #333;
+    background-color: rgba(255, 255, 255, .1);
+}
+
+.layui-nav .layui-nav-child.layui-anim a:hover {
+    color: #fff;
+    background-color: #0c82ca;
+}
+
+
+/* 学部简单介绍 */
+
+.introduce {
+    width: 815px;
+    height: 274px;
+    background: url("../images/introduce.png");
+    margin: 120px auto 0;
+    text-align: center;
+}
+
+.til-p {
+    height: 154px;
+    font: 400 60px/155px "FZCTHJW--GB1-0";
+    /* border-bottom: 1px solid #FFF; */
+    color: #fff;
+}
+
+.content-p {
+    border-top: 1px solid #DCE0E5;
+    font: 400 16px/28px "Microsoft YaHei";
+    color: #fff;
+    padding: 16px 10% 0;
+    margin: 0 auto;
+    opacity: 0.7;
+}
+
+
+/* 公共部分得新闻 */
+
+.public-news {
+    width: 1200px;
+    height: 402px;
+    margin: -163px auto 80px;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 5px 5px 10px #d8d8d8;
+}
+
+.public-news h2 {
+    font: 400 24px/40px "MicrosoftYaHei";
+}
+
+.part-new {
+    width: 450px;
+    margin-top: 60px;
+    padding-left: 85px;
+}
+
+.grade-new {
+    width: 450px;
+    margin-top: 60px;
+}
+
+.grade-new li,
+.part-new li {
+    height: 30px;
+    line-height: 30px;
+}
+
+.grade-new a,
+.part-new a {
+    display: block;
+    height: 30px;
+}
+
+.grade-new p,
+.part-new p {
+    float: left;
+    width: 75%;
+    height: 30px;
+    /* 溢出的隐藏 */
+    overflow: hidden;
+    /* 文本溢出 显示小点 */
+    text-overflow: ellipsis;
+    /* 文本不换行 */
+    white-space: nowrap;
+}
+
+.grade-new span,
+.part-new span {
+    display: block;
+    float: right;
+    width: 25%;
+    height: 30px;
+}
+
+
+/*底部的样式 */
+
+footer {
+    text-align: center;
+    height: 225px;
+    background: url("../images/footerBg.png");
+    color: #fff;
+    line-height: 30px;
+}
+
+footer img {
+    margin-top: 30px;
+    width: 80px;
+}
+
+.copyright {
+    margin-top: 13px;
+}
+
+.footer-lines {
+    width: 2px;
+    background-color: #fff;
+    height: 30px;
+    margin: 14px auto 0;
+}

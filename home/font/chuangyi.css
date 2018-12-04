@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "chuangyi";
+  src: url("chuangyi.woff2") format("woff2"),
+       url("chuangyi.woff") format("woff"),
+       url("chuangyi.ttf") format("truetype"),
+       url("chuangyi.eot") format("embedded-opentype"),
+       url("chuangyi.svg") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}

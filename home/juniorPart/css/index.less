@@ -1,0 +1,291 @@
+// 中考专栏
+.tils{
+    width: 1200px;
+    margin: 80px auto 0;
+    border:1px solid transparent;
+    h2{
+        font: 400 34px/34px "Microsoft YaHei";
+        text-align: center;
+    }
+    p{
+        text-align: center;
+        font: 400 14px/20px "ArialMT";
+        width: 310px;
+        margin: 34px auto 50px;
+        // 文字两端对齐
+        text-align: justify;
+        text-align-last: justify;
+    }
+}
+.mid-test{
+    .test-lunbo{
+        width: 1200px;
+        margin: 0 auto;
+    }
+    .items{
+        height: 420px;
+        .img-box{
+            float: left;
+            img{
+                display: block;
+                width: 600px;
+            }
+        }
+    }    
+    .content{
+        width: 580px;
+        float: right;
+        margin-top: 80px;
+        h2{
+            font: 400 24px/28px "Microsoft YaHei";
+            color: #000;
+        }
+        p{
+            width: 580px;
+            height: 70px;
+            margin: 34px auto 50px;
+            line-height: 26px;
+            color: #777777;
+        }
+    }
+    .advice{
+        li{
+            height: 40px;
+            font: 400 14px/40px "Microsoft YaHei";
+            position: relative;
+            padding-left: 30px;
+        }
+        em{
+            width: 26px;
+            height: 1px;
+            background-color: #ECC15B;
+            position: absolute;
+            left: 0;
+            top: 20px;
+        }
+        p{
+            line-height: 40px;
+            color: #000;
+            margin: 0;
+            height: 40px;
+        }
+    }
+}
+// 样式覆盖
+.layui-carousel>[carousel-item]>* {
+    background-color: #fff;
+}
+.layui-carousel-ind {
+    display: none;
+}
+.layui-carousel {
+    background-color: #fff;
+}
+// 教师风采
+.teacher-style{
+    margin-top: 80px;
+    background: url("../images/tracherBg.png") no-repeat center/cover;
+    height: 797px;
+    .tils{
+        width: 1200px;
+        border:1px solid transparent;
+        color: #fff;
+        h2{
+            font: 400 34px/34px "Microsoft YaHei";
+            text-align: center;
+            margin-top: 50px;
+        }
+        p{
+            text-align: center;
+            font: 400 14px/20px "ArialMT";
+            width: 310px;
+            margin: 34px auto 50px;
+            // 文字两端对齐
+            text-align: justify;
+            text-align-last: justify;
+        }
+    }
+    .teacher-list{
+        height: 415px;
+        width: 1200px;
+        margin: 20px auto 0;
+        li{
+            float: left;
+            margin-right: 13px;
+            img{
+                width: 290px;
+                height:355px;
+                display: block;
+            }
+            p{
+                font:400 18px/50px "Microsoft YaHei";
+                color: #fff;
+                text-align: center;
+            }
+        }
+        .page{
+            margin-top: 50px;
+            text-align: right;
+        }
+    }
+}
+// 分页 样式覆盖
+.layui-laypage .layui-laypage-curr .layui-laypage-em {
+    background-color: #fff;
+}
+.layui-laypage .layui-laypage-curr em {
+    color: #000;
+}
+.layui-laypage a, .layui-laypage span {
+    padding: 0px 13px;
+    margin: 0 5px 5px 0;
+    background-color: transparent; 
+    color: #fff;
+
+}
+.layui-laypage .layui-laypage-spr {
+    color: #fff;
+}
+.layui-btn-primary {
+    border: 1px solid #cccccc;
+    background-color: transparent;
+    color: #fff;
+    margin-top: 10px;
+}
+.layui-btn-primary:hover {
+    color: #000;
+    background-color: #fff;
+}
+.layui-btn:hover {
+    opacity: 1; 
+    color: #000;
+}
+
+// 学子风貌
+.student-style{
+    width: 1200px;
+    margin: 0 auto;
+    .student-table{
+        position: relative;
+        ul{
+            border: 1px solid transparent;
+            margin-top: 10px;
+            position: relative;
+            padding-bottom: 60px;
+        }
+        li{
+            height: 255px;
+            position: relative;
+            margin-top: 60px;
+            i{
+                position: absolute;
+                width: 28px;
+                height: 25px;
+                left: 50%;
+                margin-left: -14px;
+                top: 25px;
+                background: url("../images/point.png") no-repeat;
+            }
+        }
+        .img-box{
+            float: left;
+            width: 425px;
+            margin-left: 80px;
+            width: 425px;
+            height: 255px;
+            overflow: hidden;
+            img{
+                display: block;
+                width: 100%;
+            }
+        }
+        .txt-box{
+            width: 600px;
+            float:right;
+            h3{
+                font: 400 20px/32px "Microsoft YaHei";
+                margin-left: 96px;
+            }
+            p{
+                width: 490px;
+                max-height: 140px;
+                padding-left: 15px;
+                margin-left: 100px;
+                color: #aaa;
+                line-height: 24px;
+                margin-top: 10px;
+                position: relative;
+                overflow: hidden;
+                border-left: 2px solid #ecc15b;
+            }
+            // em{
+            //     width: 2px;
+            //     height: 37px;
+            //     position: absolute;
+            //     top: 5px;
+            //     left: -20px;
+            //     background-color: #ECC15B
+            // }
+        }
+        .lines{
+            width: 1px;
+            height: 90%;
+            background: #E6E6E6;
+            position: absolute;
+            left:50%;
+        }
+        .img-box-r{
+            float: right;
+            width: 425px;
+            height: 255px;
+            overflow: hidden;
+            margin-right: 80px;
+            img{
+                display: block;
+                width: 100%;
+            }
+        }
+        .txt-box-l{
+            float: left;
+            width: 600px;
+            h3{
+                font: 400 20px/32px "Microsoft YaHei";
+                margin-left: 50px;
+                text-align: right;
+                margin-right: 90px;
+                
+            }
+             p{
+                width: 490px;
+                max-height: 140px;
+                padding-right: 15px;
+                margin-right: 90px;
+                color: #aaa;
+                line-height: 24px;
+                margin-top: 10px;
+                position: relative;
+                overflow: hidden;
+                border-right: 2px solid #ecc15b;
+            }
+            // em{
+            //     width: 2px;
+            //     height: 37px;
+            //     position: absolute;
+            //     top: 5px;
+            //     right: -18px;
+            //     background-color: #ECC15B
+                
+            // }
+        }
+
+    }
+    .more-btn{
+        display: block;
+        height: 55px;
+        width: 140px;
+        margin: 30px auto 80px;
+        border: 1px solid #EBC15D;
+        text-align: center;
+        line-height: 56px;
+    }
+}

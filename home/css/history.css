@@ -1,0 +1,120 @@
+/*顶部banner 图*/
+
+.topBg {
+    width: 1200px;
+    margin: 37px auto 0;
+}
+
+.topBg img {
+    width: 100%;
+}
+
+.types>img {
+    position: absolute;
+    width: 100%;
+    height: 85%;
+    z-index: -1;
+}
+
+.type-content {
+    width: 1200px;
+    margin: 0 auto;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid #999;
+    position: relative;
+}
+
+.contents {
+    min-height: 320px;
+}
+
+.tils {
+    font: 400 35px/48px "Mircrisoft YaHei";
+    text-align: center;
+    width: 58%;
+    margin: 0 auto;
+    margin-top: 70px;
+}
+
+.txtBox {
+    width: 80%;
+    font: 400 16px/32px "Microsoft YaHei";
+    /*height: 370px;*/
+    padding-left: 5%;
+    text-indent: 1em;
+    position: relative;
+    margin: 40px auto;
+}
+
+.txtBox p {
+    width: 100%;
+}
+
+.txtBox img {
+    display: block;
+    border: none;
+    margin: 10px auto;
+    max-width: 100%;
+}
+
+.txtBox::after {
+    content: '';
+    width: 30px;
+    height: 40px;
+    position: absolute;
+    top: -10px;
+    left: 50px;
+    border-top: 1px solid #FC1E1F;
+    border-left: 1px solid #FC1E1F;
+}
+
+.newBottom {
+    height: 45px;
+    line-height: 45px;
+    border-top: 1px solid #999;
+    text-align: right;
+    padding-right: 10%;
+}
+
+.sapns1,
+.spans2,
+.spans3 {
+    margin: 0 5%;
+}
+
+
+/*底部上一条 下一条 信息提示  */
+
+.content-bottom {
+    width: 1200px;
+    margin: 10px auto;
+    height: 60px;
+    padding-left: 25%;
+}
+
+.content-bottom a {
+    font: 400 16px/30px "Microsoft YaHei";
+    display: block;
+    color: #FC1E1F;
+    position: relative;
+}
+
+.content-bottom a::before {
+    content: '';
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 10px;
+    left: -15px;
+    border: 5px solid #FC1E1F;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+}
+
+
+/*底部样式的覆盖*/
+
+footer {
+    position: inherit;
+}

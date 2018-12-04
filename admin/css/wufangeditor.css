@@ -1,0 +1,29 @@
+#uploadImg{
+	font-size:12px;
+	overflow:hidden;
+	position:absolute
+}
+#btn2{
+	position:absolute;
+	z-index:100;
+	margin-left:-180px;
+	font-size:60px;
+	opacity:0;
+	filter:alpha(opacity=0);
+}
+
+.A{
+	display: block;
+	margin-left: 15px;
+	/*border:1px solid #01AAED;*/
+	background-color: #1E9FFF;
+	margin-top: 10px;
+	color: #fff;
+	padding:7px 10px;
+	color: #333;
+	line-height: 35px;
+	text-decoration: none;
+	font:400 16px/18px "Mircrosoft YaHei";
+	text-align: center;
+	color: #fff;
+}

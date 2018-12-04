@@ -1,0 +1,103 @@
+<!--
+	主承载框架页面
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>中南第一附属学校</title>
+    <link rel="stylesheet" href="layui225/css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+
+<body class="layui-layout-body">
+
+    <div class="layui-layout layui-layout-admin">
+        <!--头部-->
+        <div class="layui-header">
+            <!-- <div class="layui-logo">家校沟通系统</div> -->
+
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item"><a href="content.html"><i class="layui-icon">&#xe600;</i>&nbsp;&nbsp;应用控制台</a></li>
+            </ul>
+            <!-- 头部区域（可配合layui已有的水平导航） -->
+
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;"><i class="layui-icon">&#xe612;</i> <span id="username"><!--用户信息接收--></span></a>
+                    <dl class="layui-nav-child">
+                        <dd><a class="XGMM" data-type="tabAdd" href="javascript:;"><i class="layui-icon">&#xe7a0;</i> 修改密码</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="" id="back_home"><i class="layui-icon">&#xe68e;</i> 返回首页</a>
+                    <!-- <dl class="layui-nav-child">
+                        <dd><a class="BACKJXGT" data-type="tabAdd" href="javascript:;"><i class="layui-icon">&#xe7a0;</i> 前往家校沟通</a></dd>
+                    </dl> -->
+                </li>
+                <li class="layui-nav-item"><a href="" id="login_exit"><i class="layui-icon">&#xe628;</i> 退出登录</a></li>
+            </ul>
+
+        </div>
+        <!--头部-->
+
+        <!--左部导航-->
+        <div class="layui-side layui-bg-black">
+
+            <div id="module_mune" class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            </div>
+        </div>
+        <!--左部导航-->
+
+        <!--中部内容-->
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+
+            <!-- TAB -->
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" lay-allowclose="true">
+
+                <ul class="layui-tab-title">
+                    <li id="HOME_NAV" class="layui-this" lay-id="MAIN"><i class="layui-icon">&#xe68e;</i> 系统首页</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+
+                        <iframe width="100%" frameborder="0" src="iframe-list_main.html" style="min-height:750px;"></iframe>
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- TAB -->
+
+        </div>
+        <!--中部内容-->
+
+        <!--底部内容-->
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            © 2008-<span id="DateYear"><!--当前年份--></span> - 中南第一附属学校 Powered by WuFang <span id="NowVer"><!--当前版本--></span>
+        </div>
+        <!--底部内容-->
+
+    </div>
+    <script src="./js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/md5.js"></script>
+    <!--MD5处理JS-->
+    <script type="text/javascript" src="js/config.js"></script>
+    <!--项目配置JS-->
+    <script type="text/javascript" src="js/public.js"></script>
+    <!--公共通用JS-->
+    <!--接口交互JS-->
+    <script src="layui225/layui.js"></script>
+    <!--LayUi框架JS-->
+    <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/logins.js"></script>
+    <script src="./controller/admin.js"></script>
+</body>
+
+</html>

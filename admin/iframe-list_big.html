@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<title>大数据测试</title>
+
+<link rel="stylesheet" href="layui_new/css/layui.css" media="all">
+
+<style>
+body{padding: 0px;}
+.layui-table img{ max-width: none;}
+</style>
+</head>
+<body>	
+<div class="layui-btn-group">
+  <button class="layui-btn" data-type="AddNewData"><i class="layui-icon">&#xe654;</i> 新增</button>
+  <button class="layui-btn" data-type="UpdateData"><i class="layui-icon">&#xe642;</i> 编辑</button>
+  <button class="layui-btn" data-type="LookData"><i class="layui-icon">&#xe621;</i> 查看</button>
+  <button class="layui-btn" data-type="DelCheckData"><i class="layui-icon">&#xe640;</i> 删除</button>
+  <button class="layui-btn" data-type="SelectData"><i class="layui-icon">&#xe615;</i> 查询</button>
+  <button class="layui-btn" data-type="getAllDataExport"><i class="layui-icon">&#xe601;</i> 导出（全部）</button>
+  <button class="layui-btn" data-type="getCheckDataExport"><i class="layui-icon">&#xe601;</i> 导出（选择）</button>
+  <button class="layui-btn" data-type="PageReload"><i class="layui-icon">&#x1002;</i> 刷新</button>
+</div>
+<table id="DataList">
+	<div id="aaaaa" style="position: fixed; margin: 6px;">数据加载中...</div>
+</table>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/md5.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/public.js"></script>
+<script type="text/javascript" src="js/api.js"></script>
+<script src="layui_new/layui.js"></script>
+<script>
+layui.use('table', function(){
+  var table = layui.table;
+  
+  //请求接口数据
+  var total = list_big();
+  //接口数据重写
+  total.forEach(function(Value,index){
+//	Value.SFFB_STR = SFFB_str(Value.SFFB);
+//	Value.ZYTP_SM = '<img src="'+ pic(Value.ZYTP) +'" height="30px" />';
+//	Value.ZYTP_LG = '<img src="'+ pic(Value.ZYTP) +'" />';
+  });
+  
+  //方法级渲染
+  window.demoTable = table.render({
+    elem: '#DataList'
+    ,data: total
+    ,height: 680
+    ,cols: [[ //标题栏
+      {space: true, fixed: true}//设定空隙列space: true, 是否固定列fixed: false
+      ,{checkbox: true, LAY_CHECKED: false}//设定复选框列,复选框默认全部选中
+      ,{field: 'count_id', title: '<strong>序号</strong>', width: 100, sort: true,type: 'asc'}
+      ,{field: 'username', title: '<strong>账户</strong>', width: 200, sort: true}
+      ,{field: 'YHLB', title: '<strong>类别</strong>', width: 200, sort: true}      
+      ,{field: 'DWMC', title: '<strong>单位名称</strong>', width: 640, sort: true}
+      ,{field: 'XM', title: '<strong>姓名</strong>', width: 200, sort: true}
+      ,{field: 'BJMC', title: '<strong>班级</strong>', width: 200, sort: true} 
+      ,{field: 'time', title: '<strong>时间</strong>', width: 200, sort: true} 
+      ,{field: 'festivaltype', title: '<strong>类型</strong>', width: 200, sort: true, fixed:'right'} 
+
+    ]]  
+    ,skin: 'row' //表格风格row/line/nob
+    ,even: true
+    //,size: 'lg' //尺寸   
+    ,page: true //是否显示分页
+    ,limits: [15,30,50,100]
+    ,limit: 15 //每页默认显示的数量
+    ,loading: true //请求数据时，是否显示loading
+    ,id: 'DataListId' //ID
+	  ,done: function(res, curr, count){
+	    //如果是异步请求数据方式，res即为你接口返回的信息。
+	    //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+	       
+	    //得到当前页码
+	      
+	    //得到数据总量
+	    
+	  }    
+  });
+
+  
+  var $ = layui.jquery, active = {
+		//新增数据
+		AddNewData:function(){
+    	alert("新增数据");
+    }   
+    //更新数据
+		,UpdateData:function(){
+      var checkStatus = table.checkStatus('DataListId')
+      ,data = checkStatus.data;
+      if(data.length==1)
+      { 
+    	alert("更新数据"); 
+    	var ID = data[0].ID; 
+    	  	
+      }
+      else
+      {
+			layer.msg('一次只能编辑一条数据');          	
+      }
+
+  }      
+		,LookData:function(){
+			
+			//查看数据详情
+      var checkStatus = table.checkStatus('DataListId')
+      ,data = checkStatus.data;
+      if(data.length==1)
+      { 
+    	var ID = data[0].ID; 
+    	var BJMC = data[0].BJMC; 
+    	var FBID = data[0].FBID; 
+    	var ZYMC = data[0].ZYMC; 
+    	var TJRY = data[0].TJRY; 
+    	var FBSJ = data[0].FBSJ; 
+    	//var SFFB = SFFB_str(data[0].SFFB);
+    	var SFFB_STR = data[0].SFFB_STR;
+    	var ZYTP_LG = data[0].ZYTP_LG;
+    	var ZYNR = data[0].ZYNR; 
+    	
+    	var content = "";    	
+			content +='<table class="layui-table">';
+			content +='  <colgroup>';
+			content +='    <col width="100">';
+			content +='    <col width="500">';
+			content +='  </colgroup>';
+			content +='  <tbody>';
+			content +='    <tr><td><strong>序号</strong></td><td>'+ID+'</td></tr>';
+			content +='    <tr><td><strong>班级</strong></td><td>'+BJMC+'</td></tr>';
+			content +='    <tr><td><strong>班级ID</strong></td><td>'+FBID+'</td></tr>';
+			content +='    <tr><td><strong>标题</strong></td><td>'+ZYMC+'</td></tr>';
+			content +='    <tr><td><strong>创建人</strong></td><td>'+TJRY+'</td></tr>';
+			content +='    <tr><td><strong>创建时间</strong></td><td>'+FBSJ+'</td></tr>';
+			content +='    <tr><td><strong>状态</strong></td><td>'+SFFB_STR+'</td></tr>';
+			content +='    <tr><td><strong>图片</strong></td><td>'+ZYTP_LG+'</td></tr>';
+			content +='    <tr><td><strong>内容</strong></td><td>'+ZYNR+'</td></tr>';
+			content +='  </tbody>';
+			content +='</table>';    	
+			
+			//弹出查看框
+			layer.open({
+			  type: 1, 
+			  title: '查看内容',
+			  area: ['800px', '600px'],
+			  //offset: ['50px', '200px'],
+			  content: content //这里content是一个普通的String
+			}); 	
+      }
+      else if(data.length==0)
+      {	
+			layer.msg('请勾选需要操作的数据');          	
+      }		
+      else
+      {	
+			layer.msg('本操作只可勾选单条数据');          	
+      }	      
+    }   
+    //按选择删除数据
+		,DelCheckData:function(){
+			//查看数据详情
+      var checkStatus = table.checkStatus('DataListId')
+      ,data = checkStatus.data;
+      if(data.length==1)
+      { 
+      	
+    	var ID = data[0].ID; 
+    	var ZYMC = data[0].ZYMC; 
+    	var FBID = data[0].FBID; 
+    	var SFFB = data[0].SFFB; 
+			layer.confirm('确定要删除？<br>序号：'+ID+'<br>标题：'+ZYMC, {
+			  btn: ['确定删除', '暂不'] //可以无限个按钮
+			}, function(index, layero){
+			  //按钮【按钮一】的回调
+			  //del_bjgg(ID,FBID,SFFB);
+			  window.location.reload();
+			});
+			
+      }
+      else if(data.length==0)
+      {	
+			layer.msg('请勾选需要操作的数据');          	
+      }		
+      else
+      {	
+			layer.msg('本操作只可勾选单条数据');          	
+      }			
+    }
+		//按条件查询数据（弹框）
+		,SelectData:function(){
+    	alert("按条件查询数据（弹框）");
+    }
+		//导出全部数据
+    ,getAllDataExport:function(){
+      var checkStatus = table.checkStatus('DataListId')
+      ,data = checkStatus.data;
+      layer.alert(JSON.stringify(data));    	
+    	alert("导出全部数据");
+    }
+    //导出选择数据
+    ,getCheckDataExport:function(){
+      var checkStatus = table.checkStatus('DataListId')
+      ,data = checkStatus.data;
+      layer.alert(JSON.stringify(data));      	
+    	alert("导出选择数据");
+    }
+    //刷新
+    ,PageReload:function(){
+    	window.location.reload()
+    }
+  };
+
+	//监听工具栏对应操作
+  $('.layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+});
+</script>
+</body>
+</html>

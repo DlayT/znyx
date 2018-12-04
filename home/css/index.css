@@ -1,0 +1,491 @@
+body {
+    background-color: #fff;
+    background-color: rgba( 255, 255, 255, .5);
+    /*IE8支持*/
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr=#7fffff, endColorstr=#7fffffff);
+    min-width: 1200px;
+}
+
+
+/*侧边栏部分样式  */
+
+.aside {
+    position: absolute;
+    left: 0;
+    /* top: 70px; */
+    z-index: 11;
+    background-color: #999;
+    background-color: rgba( 160, 160, 160, .5);
+    /*IE8支持*/
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr=#7f64666A, endColorstr=#7f64666A);
+    text-align: center;
+}
+
+.aside p {
+    width: 30px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 20px;
+    margin-bottom: 5px;
+}
+
+.tips {
+    background-color: #fff;
+    background-color: rgba( 255, 255, 255, .7);
+    /*IE8支持*/
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr=#B2ffffff, endColorstr=#B2ffffff);
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.u-part {
+    width: 165px;
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, .6);
+    /*IE8支持*/
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr=#B2ffffff, endColorstr=#B2ffffff);
+    display: none;
+}
+
+.u-part h4 {
+    font: 400 18px/40px "Microsoft YaHei";
+    margin: 0;
+    background-color: rgba(255, 255, 255, .7);
+    /*IE8支持*/
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr=#B2ffffff, endColorstr=#B2ffffff);
+}
+
+.u-part ul {
+    background-color: transparent;
+    padding-bottom: 10px;
+    margin-bottom: 0px;
+}
+
+.u-part ul li {
+    width: 86%;
+    margin: 10px auto;
+    border-radius: 5px;
+    height: 40px;
+    line-height: 40px;
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, .7);
+    /*IE8支持*/
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr=#B2ffffff, endColorstr=#B2ffffff);
+}
+
+.u-part ul li a {
+    color: #000;
+    display: block;
+    border-radius: 5px;
+}
+
+
+/*轮播图部分  */
+
+.lunbo {
+    width: 100%;
+    height: 87%;
+    position: absolute;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.swiper-containers {
+    width: 100%;
+    text-align: center;
+}
+
+.title img {
+    width: 100%;
+    height: 100%;
+}
+
+.pagination {
+    position: fixed;
+    right: 18%;
+    bottom: 240px;
+    width: 148px;
+    height: 30px;
+}
+
+.swiper-pagination-switch {
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    display: block;
+    margin: 5px 10px;
+    border-radius: 50%;
+    float: left;
+    margin: 5px 10px;
+}
+
+.swiper-active-switch {
+    background-color: #7D7F7B;
+}
+
+.imgBox {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+}
+
+
+/* .swiper-slide img {
+    width: 100%;
+    display: inline-block;
+    height: 100%;
+} */
+
+
+/*tab 切换  */
+
+.t-tabss {
+    position: fixed;
+    z-index: 11;
+    bottom: 50px;
+    width: 100%;
+    background-color: #fff;
+    background-color: rgba( 255, 255, 255, .8);
+    /*IE8支持*/
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr=#c8ffffff, endColorstr=#c8ffffff);
+    height: 180px;
+}
+
+.tabss {
+    width: 1200px;
+    margin: 0 auto;
+    background-color: transparent;
+    height: 180px;
+}
+
+.tabs {
+    position: absolute;
+    top: -36px;
+    width: 100%;
+}
+
+.tabs a {
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, .8);
+    /*IE8支持*/
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr=#e5ffffff, endColorstr=#e5ffffff);
+    padding: 8px 70px 15px 11px;
+    color: #333;
+    font: 400 20px/16px "Microsoft YaHei";
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    position: relative;
+}
+
+.txt {
+    font-size: 14px;
+    position: absolute;
+    bottom: 0;
+    right: 45px;
+    /* left: 70px; */
+    color: #666;
+}
+
+.flag {
+    /* border: 10px solid #178EB9; */
+    border: 10px solid #096299;
+}
+
+.flags {
+    /* border: 10px solid #C7302E; */
+    border: 10px solid #178EB9;
+}
+
+.flag,
+.flags {
+    position: absolute;
+    height: 20px;
+    top: 0;
+    right: 15px;
+    border-bottom-color: transparent;
+}
+
+
+/*tab 切换的内容  */
+
+
+/* 第一栏 */
+
+.news-left {
+    width: 50%;
+}
+
+.times {
+    width: 60px;
+    height: 45px;
+    /* background: #D10000; */
+    background-color: #178EB9;
+    color: #fff;
+    text-align: center;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.times span {
+    display: block;
+}
+
+.days {
+    height: 27px;
+    line-height: 28px;
+    font-size: 20px;
+}
+
+.mouths {
+    height: 18px;
+    line-height: 18px;
+    /* background-color: #660000; */
+    background-color: #004B66;
+    font-size: 14px;
+}
+
+.schollNews {
+    line-height: 45px;
+    margin-top: 15px;
+    /* margin-left: 15px; */
+    /* height: 45px; */
+}
+
+.schollNews li {
+    margin-top: 8px;
+}
+
+.schollNews p {
+    width: 80%;
+    margin-left: 15px;
+    border-bottom: 1px solid #999;
+    font-size: 16px;
+    height: 40px;
+}
+
+.schollNews a {
+    color: #000;
+    display: block;
+    width: 80%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.news-right {
+    width: 50%;
+}
+
+.tils {
+    position: relative;
+}
+
+.tils h3 {
+    font: 400 18px/35px "Microsoft YaHei";
+    margin: 8px;
+    border-bottom: 1px solid #999;
+}
+
+.tils a {
+    color: #fff;
+    /* background-color: #C8302F; */
+    background-color: #178EB9;
+    padding: 4px 7px;
+    position: absolute;
+    right: 10px;
+    top: 4px;
+    cursor: pointer;
+}
+
+.notice li {
+    line-height: 40px;
+    height: 40px;
+    position: relative;
+}
+
+.notice a {
+    color: #000;
+    position: relative;
+    display: inline-block;
+    width: 75%;
+    padding-left: 30px;
+    font-size: 16px;
+    padding-right: 110px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.notice a span {
+    position: absolute;
+    right: 0;
+}
+
+.notice img {
+    padding-top: 0;
+    position: absolute;
+    top: 13px;
+    left: 10px;
+}
+
+
+/*tab 切换 第二栏  */
+
+.btn1 {
+    background: url("../images/btn1.png") center/cover no-repeat;
+    display: inline-block;
+    width: 180px;
+    height: 50px;
+    position: relative;
+    top: -10px;
+    left: 30px;
+}
+
+
+/*tab 切换 第三栏  */
+
+.school-link {
+    padding: 0 20px 10px;
+    margin: 15px 0;
+    width: 20%;
+    /* min-height: 165px; */
+}
+
+.company-link h5,
+.school-link h5 {
+    font: 500 18px/40px "Microsoft YaHei";
+    margin-left: 15px;
+    border-bottom: 1px solid #000;
+    display: inline-block;
+    /* padding-right: 5px; */
+    position: relative;
+}
+
+.company-link h5::after,
+.school-link h5::after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    border: 4px solid #333;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    right: -1px;
+    bottom: -8px;
+}
+
+.onelinks,
+.towlinks {
+    margin-top: 10px;
+}
+
+.towlinks a,
+.onelinks a {
+    font: 500 16px/30px "Microsoft YaHei";
+    color: #000;
+    margin: 5px 18px;
+}
+
+.company-link {
+    padding: 0 20px 10px;
+    margin: 15px 0;
+    width: 20%;
+}
+
+.other-link {
+    width: 52%;
+    margin: 15px 0;
+}
+
+.other-link h5 {
+    float: left;
+    width: 11%;
+    font: 500 16px/40px "Microsoft YaHei";
+    margin-top: 10%;
+    margin-left: 25px;
+    margin-right: 30px;
+    border-bottom: 1px solid #000;
+}
+
+.school-link,
+.company-link,
+.other-link {
+    border-left: 1px solid #000;
+}
+
+.other-link img {
+    margin-top: 20px;
+    width: 70%;
+    height: 100%;
+}
+
+.threelink {
+    width: 80%;
+}
+
+.threelink ul {
+    margin-top: 5px;
+}
+
+.threelink li {
+    float: left;
+    width: 22%;
+    margin-bottom: 7px;
+    margin-left: 10px;
+}
+
+.threelink a {
+    display: block;
+    width: 100%;
+    height: 35px;
+    /* border: 1px solid red; */
+}
+
+.threelink .Olinks1 a {
+    background: url("../images/qitalianjie.png");
+}
+
+.threelink .Olinks2 a {
+    background: url('../images/qitalianjie.png') 128px 0px;
+}
+
+.threelink .Olinks3 a {
+    background: url('../images/qitalianjie.png') 255px 0px;
+}
+
+.threelink .Olinks4 a {
+    background: url('../images/qitalianjie.png') 375px 0px;
+}
+
+.threelink .Olinks5 a {
+    background: url('../images/qitalianjie.png') 2px 77px;
+}
+
+.threelink .Olinks6 a {
+    background: url('../images/qitalianjie.png') 110px 80px;
+}
+
+.threelink .Olinks7 a {
+    background: url('../images/qitalianjie.png') 227px 77px;
+}
+
+.threelink .Olinks8 a {
+    background: url('../images/qitalianjie.png') 330px 77px;
+}
+
+.threelink .Olinks9 a {
+    background: url('../images/qitalianjie.png') 1px 34px;
+}
+
+.threelink .Olinks10 a {
+    background: url('../images/qitalianjie.png') 107px 34px;
+}
+
+.threelink .Olinks11 a {
+    background: url('../images/qitalianjie.png') 236px 34px;
+}
+
+.threelink .Olinks12 a {
+    background: url('../images/qitalianjie.png') 369px 34px;
+}

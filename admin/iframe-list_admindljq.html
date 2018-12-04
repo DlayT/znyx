@@ -1,0 +1,53 @@
+<!-- 
+ * @Author: Cityfox(29151335@qq.com)
+ * @Date: 2018-02-05 09:27:40 
+ * @PageName: 平台监控系统-登录鉴权
+ * @PageDes: 展示相关信息
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>中南第一附属小学</title>
+    <link rel="stylesheet" href="layui225/css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script type="text/javascript" src="js/logins.js"></script>
+</head>
+
+<body onload="onload_list();Btn_defined();">
+
+    <div id="HeadList" class="layui-btn-group">
+        <!-- 头部操作按钮 -->
+    </div>
+
+    <hr class="layui-bg-green">
+    <!-- 水平线 -->
+
+    <table id="DataList" lay-filter="demo">
+        <!-- 数据表格 -->
+        <div id="aaaaa" style="position: fixed; margin: 6px;">数据加载中...</div>
+    </table>
+
+</body>
+<script src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="js/md5.js"></script>
+<!--MD5处理JS-->
+<script type="text/javascript" src="js/config.js"></script>
+<!--项目配置JS-->
+<script type="text/javascript" src="js/public.js"></script>
+<!--公共通用JS-->
+<script type="text/javascript" src="js/api.js"></script>
+<!--接口交互JS-->
+<script src="layui225/layui.js"></script>
+<!--LayUi框架JS-->
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<!-- 引用当前业务JS -->
+<!-- <script src="js/logins.js"></script> -->
+<!-- <script src="controller/admin.js"></script> -->
+<!-- 引用当前业务JS -->
+<!-- <script src="js/logins.js"></script> -->
+<script src="controller/iframe-list_admindljq.js"></script>
+
+</html>

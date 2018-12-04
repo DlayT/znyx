@@ -1,0 +1,114 @@
+<!--
+	教师明细相关业务页面
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<title>教师明细</title>
+
+<link rel="stylesheet" href="layui225/css/layui.css" media="all">
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<style>
+body{padding: 0px;}
+.layui-table img{ max-width: none;}
+</style>
+</head>
+<body onload="Btn_defined();">	
+<div class="layui-btn-group">
+    <button class="layui-btn" data-type="PageReload"><i class="layui-icon">&#x1002;</i> 刷新</button>
+</div>	
+<hr class="layui-bg-green">
+<table id="DataList">
+	<div id="aaaaa" style="position: fixed; margin: 6px;">此页面数据量大，请耐心等待，加载中...</div>
+</table>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/md5.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/public.js"></script>
+<script type="text/javascript" src="js/api.js"></script>
+<script src="layui225/layui.js"></script>
+<script>
+
+layui.use('table', function(){
+  var table = layui.table;
+	var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功  
+  //请求接口数据
+  var total = list_jsmx();
+  if(total!=null)
+  {
+	  //接口数据重写
+	  total.forEach(function(Value,index){
+
+		Value.GLJB_STR = GLJB_str(Value.GLJB);
+	  });
+  }
+  
+  //方法级渲染
+  window.demoTable = table.render({
+   skin: 'line' //行边框风格 //表格风格row/line/nob
+  ,even: true //开启隔行背景
+  //,size: 'sm' //小尺寸的表格  	
+	,page: true //是否显示分页
+	,limits: [15,30,50,100,500]//选择每页显示数
+	,limit: 15 //每页默认显示的数量
+	,loading: true //请求数据时，是否显示loading,需URL请求时生效
+	,id: 'DataListId' //ID  
+  ,elem: '#DataList'
+	,data: total
+	,height: 680
+	,cols: [[ //标题栏
+	  {space: true, fixed: true}//设定空隙列space: true, 是否固定列fixed: false
+	  //,{checkbox: true, LAY_CHECKED: false,fixed:'left'}//设定复选框列,复选框默认全部选中
+	  ,{field: 'ID', title: '<strong>序号</strong>', width: 100, sort: true,fixed:'left', type:'asc'}
+	  ,{field: 'JSXM', title: '<strong>教师姓名</strong>', width: 200, sort: true}
+	  ,{field: 'SRZW', title: '<strong>职务</strong>', width: 100, sort: true}      
+	  ,{field: 'YHM', title: '<strong>账户</strong>', width: 200, sort: true}
+	  ,{field: 'GLJB_STR', title: '<strong>管理级别</strong>', width: 200, sort: true}	  
+	  ,{field: 'RJBJ', title: '<strong>任教班级</strong>', width: 800, sort: true}
+	  ,{field: 'BJGG', title: '<strong>班级通知（条）</strong>', width: 150, sort: true, fixed:'right'}
+	  ,{field: 'BJXW', title: '<strong>班级新闻（条）</strong>', width: 150, sort: true, fixed:'right'}
+	  ,{field: 'BJRZ', title: '<strong>班级荣誉（条）</strong>', width: 150, sort: true, fixed:'right'}
+	  ,{field: 'JZRZ', title: '<strong>家长留言（条）</strong>', width: 150, sort: true, fixed:'right'}
+	]]  
+  ,done: function(res, curr, count){
+    //如果是异步请求数据方式，res即为你接口返回的信息。
+    //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+  	    
+    //得到当前页码
+      
+    //得到数据总量
+    
+  }    
+  });
+  
+});
+
+	
+	function Btn_defined() {
+		//初始化操作按钮，并绑定对应事件	
+		layui.use('table', function() {
+			var table = layui.table;
+			var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功  
+			var $ = layui.jquery,
+				active = {
+					PageReload: function() {
+						window.location.reload()
+					}
+				};
+
+			//监听工具栏对应操作
+			$('.layui-btn').on('click', function(obj) {
+				var type = $(this).data('type');
+				active[type] ? active[type].call(this) : '';
+			});
+
+		});
+	}
+</script>
+  
+<script type="text/javascript" src="js/wufangeditor.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>中南第一附属小学</title>
+    <link rel="icon" href="./images/favicon.ico" type="image/x-icon">
+
+    <!-- 兼容低版本浏览器  识别 H5 标签 -->
+    <script src="http://cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+    <link rel="stylesheet" href="../dist/css/layui.css">
+    <link rel="stylesheet" href="./css/public.css">
+    <link rel="stylesheet" href="./css/newList.css">
+</head>
+
+<body>
+    <!-- 头部 -->
+    <section id="header">
+        <!-- 包含顶部的 导航  logo -->
+        <!-- 公共的学部新闻和年级新闻 -->
+    </section>
+    <!-- 新闻列表容器 -->
+    <section>
+        <div class="tils">
+            <h3></h3>
+            <p></p>
+        </div>
+        <div class="new-list clearfix" id="new-list">
+            <ul>
+
+            </ul>
+            <!--分页  -->
+            <div class="pages" id="page1"></div>
+        </div>
+    </section>
+    <!--底部 footer -->
+    <section id="footer">
+
+    </section>
+</body>
+<script src="./js/jquery1.8.3.min.js"></script>
+<!-- 低版本浏览器获取数据 -->
+<script src="../js/jquery.xdomainrequest.min.js"></script>
+<script src="../dist/layui.js"></script>
+
+<script src="../js/config.js"></script>
+<script src="./js/public.js"></script>
+<script>
+    // 页面模版
+    // window.onload = function() {
+    // 头部的结构
+    GET_HTML_Templet("./template/top.html", "header");
+    // 底部的结构
+    GET_HTML_Templet("./template/footer.html", "footer");
+</script>
+<script src="./js/newList.js"></script>
+
+<!-- 数据模板 -->
+<!-- <script id="newList" type="text/html">
+    {{# layui.each(d.list, function(index, item){ }}
+    <li>
+        <i></i>
+        <div class="lines"></div>
+        <a href="./xq.html?key=asd&code={{item.code}}&id={{item.id}}" target="_blank">
+            <p>{{item.title}}</p>
+            <span>{{item.creattime.substr(0, 10)}}</span>
+        </a>
+    </li>
+    {{# }); }} {{# if(d.list.length === 0){ }} 无数据 {{# } }}
+</script> -->
+
+</html>

@@ -1,0 +1,798 @@
+<!--
+	业务页面
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <!--无需标题-->
+    <title>中南附小-数学组</title>
+    <!--LayUi框架CSS-->
+    <link rel="stylesheet" href="layui225/css/layui.css" media="all">
+    <!--项目CSS-->
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!--editor编辑器字体-->
+    <link rel="stylesheet" href="editor/fontAwesome/css/font-awesome.min.css">
+    <!--editor编辑器CSS-->
+    <link rel="stylesheet" href="editor/richEditor.css">
+    <!--JQ-->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <!--MD5处理JS-->
+    <script type="text/javascript" src="js/md5.js"></script>
+    <!--项目配置JS-->
+    <script type="text/javascript" src="js/config.js"></script>
+    <!--公共通用JS-->
+    <script type="text/javascript" src="js/public.js"></script>
+    <!--接口交互JS-->
+    <script type="text/javascript" src="js/api.js"></script>
+    <!--LayUi框架JS-->
+    <script src="layui225/layui.js"></script>
+    <!--editor编辑器JS-->
+    <script src="editor/richEditor.min.loc.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./ueditor/ueditor.all.min.js"></script>
+    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+    <script type="text/javascript" charset="utf-8" src="./ueditor/lang/zh-cn/zh-cn.js"></script>
+    <style>
+        body {
+            padding: 0px;
+        }
+        
+        img {
+            max-width: 100%;
+        }
+        
+        .layui-table img {
+            max-width: none;
+        }
+        
+        .re-container {
+            color: #000;
+        }
+        
+        .re-editor img {
+            max-width: 100%;
+        }
+        
+        .re-editor span {
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body onload="onload_list();Btn_defined();">
+
+    <div class="layui-btn-group">
+        <button class="layui-btn BIG" data-type="AddNewData"><i class="layui-icon">&#xe654;</i> 新增</button>
+        <button class="layui-btn" data-type="SelectData"><i class="layui-icon">&#xe615;</i> 查询</button>
+        <button class="layui-btn" data-type="PageReload"><i class="layui-icon">&#x1002;</i> 刷新</button>
+    </div>
+    <hr class="layui-bg-green">
+    <table id="DataList" lay-filter="demo">
+        <div id="aaaaa" style="position: fixed; margin: 6px;">数据加载中...</div>
+    </table>
+
+    <script type="text/javascript">
+        //相关操作函数   code的值
+        var CFG_CODE = 96;
+        //
+
+        //字段名对应中文
+        var PERSON = {
+            //表格列表字段
+            a0: {
+                SID: "id",
+                SZH: "序号"
+            },
+            a1: {
+                SID: "sort",
+                SZH: "排序"
+            },
+            a2: {
+                SID: "title",
+                SZH: "标题"
+            },
+            a3: {
+                SID: "description",
+                SZH: "描述"
+            },
+            a4: {
+                SID: "cover",
+                SZH: "封面"
+            },
+            a5: {
+                SID: "author",
+                SZH: "创建人"
+            },
+            a6: {
+                SID: "creattime",
+                SZH: "创建时间"
+            },
+            a7: {
+                SID: "state",
+                SZH: "状态"
+            },
+
+            //重写后
+            a8: {
+                SID: "cover_ck",
+                SZH: "封面"
+            },
+            a9: {
+                SID: "STATE_STR",
+                SZH: "状态"
+            },
+            a10: {
+                SID: "content_STR",
+                SZH: "内容"
+            },
+        };
+        // 发布的状态字段 （单选部分）
+        var PERSONSTATE = [{
+            STITLE: "发布",
+            SVALUE: 1
+        }, {
+            STITLE: "不发布",
+            SVALUE: 0
+        }, ];
+        // 搜索部分的状态字段（下拉框部分）
+        var PERSONSTATESELECT = [{
+            STITLE: "全部",
+            SVALUE: ""
+        }, {
+            STITLE: "发布",
+            SVALUE: 1
+        }, {
+            STITLE: "不发布",
+            SVALUE: 0
+        }, ];
+
+        //加载数据表格
+        function onload_list(title, state, FBSJ_a_sl, FBSJ_b_sl) {
+
+            ////初始化参数
+            if (EmptySimple(state)) {
+                state = "99";
+            }
+
+            layui.use('table', function() {
+                var table = layui.table;
+                var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功  
+                //请求接口数据
+                var total = list_article(CFG_CODE, title, state, FBSJ_a_sl, FBSJ_b_sl);
+
+                //数据重写////////////////////////////////
+                if (NoEmptySimple(total)) {
+                    //接口数据重写
+                    total.forEach(function(Value, index) {
+                        if (NoEmptySimple(Value.cover)) {
+                            Value.cover_ck = "预览";
+                        }
+                        Value.STATE_STR = state_str(Value.state);
+                        Value.content_STR = Value.content;
+                    });
+                }
+                //数据重写////////////////////////////////
+
+                //方法级渲染------绑定表格数据////////////////////////////////
+                window.demoTable = table.render({
+                    skin: 'row', //行边框风格 //表格风格row/line/nob
+                    even: true, //开启隔行背景
+                    //,size: 'lg' //小尺寸的表格  	sm,lg
+                    page: true, //是否显示分页
+                    limits: [14, 30, 50, 100, 500], //选择每页显示数
+                    limit: 14, //每页默认显示的数量
+                    loading: true, //请求数据时，是否显示loading,需URL请求时生效
+                    id: 'DataListId', //ID  
+                    elem: '#DataList',
+                    data: total, // 通过接口获取到的数据 total
+                    height: 670,
+                    cols: [
+                        [ //标题栏
+                            { //设定空隙列space: true, 是否固定列fixed: false
+                                space: true,
+                                fixed: true
+                            }, { //设定复选框列,复选框默认全部选中
+                                checkbox: true,
+                                LAY_CHECKED: false,
+                                fixed: 'left'
+                            }, {
+                                field: PERSON.a0.SID,
+                                title: '<strong>' + PERSON.a0.SZH + '</strong>',
+                                minWidth: 100,
+                                sort: true,
+                                type: 'asc',
+                                fixed: 'left'
+                            }, {
+                                field: PERSON.a1.SID,
+                                title: '<strong>' + PERSON.a1.SZH + '</strong>',
+                                minWidth: 100,
+                                sort: true
+                            }, {
+                                field: PERSON.a2.SID,
+                                title: '<strong>' + PERSON.a2.SZH + '</strong>',
+                                minWidth: 300,
+                                sort: true
+                            }, {
+                                field: PERSON.a3.SID,
+                                title: '<strong>' + PERSON.a3.SZH + '</strong>',
+                                minWidth: 300,
+                                sort: true
+                            }, { // 封面预览
+                                field: PERSON.a8.SID,
+                                title: '<strong>' + PERSON.a8.SZH + '</strong>',
+                                minWidth: 80,
+                                sort: true,
+                                event: 'setSign',
+                                style: 'cursor: pointer;color: #FF8040;'
+                            }, {
+                                field: PERSON.a5.SID,
+                                title: '<strong>' + PERSON.a5.SZH + '</strong>',
+                                minWidth: 100,
+                                sort: true
+                            }, {
+                                field: PERSON.a6.SID,
+                                title: '<strong>' + PERSON.a6.SZH + '</strong>',
+                                minWidth: 200,
+                                sort: true
+                            }, {
+                                field: PERSON.a9.SID,
+                                title: '<strong>' + PERSON.a9.SZH + '</strong>',
+                                minWidth: 80,
+                                sort: true,
+                                fixed: 'right'
+                            }, {
+                                title: '<strong>操作</strong>',
+                                minWidth: 160,
+                                sort: true,
+                                fixed: 'right',
+                                toolbar: '#barDemo'
+                            }
+                        ]
+                    ],
+                    done: function(res, curr, count) {
+                        //加载成功后
+                        TableLoadInfo(res, curr, count);
+                    }
+                });
+                //方法级渲染------绑定表格数据////////////////////////////////
+
+            });
+
+        }
+        //  button  事件绑定
+        function Btn_defined() {
+            //初始化操作按钮，并绑定对应事件	
+            layui.use('table', function() {
+                var table = layui.table;
+
+                //绑定单列操作按钮//////////////////////////////////	
+                table.on('tool(demo)', function(obj) {
+                    // 查看传进来的参数obj
+                    //
+                    var data = obj.data;
+                    //原始数据
+                    var id = data.id;
+                    var title = data.title;
+                    var description = data.description;
+                    var author = data.author;
+                    var creattime = data.creattime;
+                    var state = data.state;
+                    var sort = data.sort;
+                    var cover = data.cover;
+
+                    //重写后
+                    var content_STR = data.content_STR;
+                    var state_STR = data.state_STR;
+                    //调用 文章发布状态的函数   转换为中文
+                    var state_S = state_str_s(data.state);
+
+                    //if (EmptySimple(cover)) {cover_SM = '<img src="image/dafault.jpg" width="100px" />';}    
+                    // 事件判断  查看数据信息的封面
+                    if (obj.event === 'setSign') {
+                        //监听单元格事件--封面预览图片
+                        var content = ImgWidthOutput(cover, "", "max-width:100%;");
+                        layer.open({
+                            type: 1,
+                            title: '查看内容',
+                            area: ['500px', '500px'],
+                            content: content //这里content是一个普通的String
+                        });
+
+                    }
+                    // 查看详情
+                    if (obj.event === 'detail') {
+                        //查看当前数据
+
+                        var content = "";
+                        content += '<br><br>';
+                        content += '  	<form class="layui-form" action="" style="margin:10px;">';
+
+                        content += '    <div class="layui-form-item">';
+                        content += '	    <div class="layui-inline">';
+                        content += LabelText("id", "序号", id, "inline", "disabled");
+                        content += LabelText("creattime", "创建时间", creattime, "inline", "disabled");
+                        content += LabelText("author", "创建人", author, "inline", "disabled");
+                        content += '	    </div>';
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item">';
+                        content += '	    <div class="layui-inline">';
+                        content += LabelText("state", "状态", state_S, "inline", "disabled");
+                        content += LabelText("sort", "排序", sort, "inline", "disabled");
+                        content += '	    </div>';
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item">';
+                        content += LabelText("title", "标题", title, "block", "disabled");
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item">';
+                        content += LabelTextArea("description", "描述", description, "block", "readonly");
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item">';
+                        content += LabelChunText("封面图片", ImgWidthOutput(cover, "", "max-width:200px;"), "block");
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item">';
+                        content += LabelChunText("文本内容", content_STR, "block");
+                        content += '    </div>';
+
+                        content += '  	</form>';
+
+                        //弹出查看框
+                        layer.open({
+                            type: 1,
+                            title: '查看内容',
+                            area: ['1000px', '700px'],
+                            //offset: ['50px', '200px'],
+                            content: content //这里content是一个普通的String
+                        });
+                        //查看当前数据
+                    } else if (obj.event === 'del') { // 删除事件
+                        //删除当前数据	 
+                        var content = '<span style="color:#f00;">确定要删除？</span><br>序号：' + id + '<br>标题：' + title;
+                        layer.confirm(content, {
+                            btn: ['确定删除', '暂不删除'] //可以无限个按钮		  	  
+                        }, function(index, layero) {
+                            //按钮【按钮一】的回调
+                            del_article(id, CFG_CODE);
+
+                            //无刷新删除DOM结构暂未解决
+                            //checkStatus.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            setTimeout(function() {
+                                layer.closeAll();
+                                window.location.reload();
+                            }, 1000);
+
+                        }, function(index) {
+                            //按钮【按钮二】的回调	
+                            layer.msg('您已取消了相关操作');
+                        });
+                        //删除当前数据	
+
+                    } else if (obj.event === 'edit') { // 修改和编辑当前的数据
+                        var content = "";
+                        content += '<br><br>';
+                        content += '  	<form class="layui-form" action="" style="margin:10px;">';
+
+                        content += '    <div class="layui-form-item">';
+                        content += '	    <div class="layui-input-block">';
+                        content += LabelButton("立即更新", "layui-btn-warm", "button_update();");
+                        content += LabelButton("暂不更新", "layui-btn-primary", "button_close();");
+                        content += '	    </div>';
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item">';
+                        content += '	    <div class="layui-inline">';
+                        content += LabelText("id", "序号", id, "inline", "disabled");
+                        content += LabelText("creattime", "创建时间", creattime, "inline", "disabled");
+                        content += LabelText("author", "创建人", author, "inline", "disabled");
+                        content += '	    </div>';
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item">';
+                        content += '	    <div class="layui-inline">';
+                        content += LabelRadio("state", "状态", state, "inline", PERSONSTATE);
+                        content += LabelText("sort", "排序", sort, "inline", "");
+                        content += '	    </div>';
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item">';
+                        content += LabelText("title", "标题", title, "block", "");
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item">';
+                        content += LabelTextArea("description", "描述", description, "block", "");
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item">';
+                        content += LabelChunText("封面图片", ImgWidthOutput(cover, "", "max-width:190px;"), "inline");
+                        content += LabelUploadImg("更换图片");
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item layui-form-text">';
+                        // content += LabelTextEdit("文本编辑");
+                        content += ' <div id="editor" type="text/plain" style="width:900px;height:700px;"></div>'
+                        content += '    </div>';
+
+                        content += '    <div class="layui-form-item">';
+                        content += '	    <div class="layui-input-block">';
+                        content += LabelButton("立即更新", "layui-btn-warm", "button_update();");
+                        content += LabelButton("暂不更新", "layui-btn-primary", "button_close();");
+                        content += '	    </div>';
+                        content += '    </div>';
+
+                        content += '  	</form>';
+                        //弹出查看框
+                        layer.open({
+                            type: 1,
+                            title: '编辑内容',
+                            area: ['1000px', '700px'],
+                            //offset: ['10px', '100px'],
+                            content: content, //这里content是一个普通的String
+                            cancel: function(index, layero) {
+                                UE.getEditor('editor').destroy();
+                            }
+                        });
+
+                        //绑定文本编辑器DIV的ID   初始化编辑器
+                        var editor = UE.getEditor('editor');
+                        editor.ready(function() { //编辑器初始化完成再赋值  
+                            editor.setContent(content_STR); //赋值给UEditor  
+                        });
+                        // var editor = new RichEditor("#editor", {
+                        //     width: 900,
+                        //     height: 400,
+                        //     toolBg: "#eee",
+                        //     buttons: {
+                        //         justifyLeft: {
+                        //             title: "居左",
+                        //             icon: "\uf036"
+                        //         },
+                        //         justifyCenter: {
+                        //             title: "居中",
+                        //             icon: "\uf037"
+                        //         },
+                        //         justifyRight: {
+                        //             title: "居右",
+                        //             icon: "\uf038"
+                        //         },
+                        //         insertImage: {
+                        //             title: "插入图片",
+                        //             icon: "\uf03e"
+                        //         }
+                        //     }
+                        // });
+
+                        // // 获取编辑的容器
+                        // $('.re-editor div').find('span').css('lineHeight', '1.5');
+                        // $('.re-editor').html(content_STR);
+
+                        // $("#btn").on('click', function() {
+                        //     $('#content').html($('.re-editor').html());
+                        //     $('#content div').find('span').css('lineHeight', '1.5');
+                        //     $('#content').show();
+                        // });
+
+                        form.render(); // 数据表格重新渲染
+
+                        //编辑当前数据
+                    }
+                });
+                //绑定单列操作按钮//////////////////////////////////
+
+                //绑定头部操作按钮//////////////////////////////////
+                var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功  
+                var $ = layui.jquery,
+                    active = {
+                        //新增数据
+                        AddNewData: function() {
+                            var content = "";
+                            content += '<br><br>';
+                            content += '  	<form class="layui-form" action="" style="margin:10px;">';
+
+                            content += '    <div class="layui-form-item">';
+                            content += '	    <div class="layui-input-block">';
+                            content += LabelButton("立即新增", "layui-btn-warm", "button_add();");
+                            content += LabelButton("关闭窗口", "layui-btn-primary", "button_close();");
+                            content += '	    </div>';
+                            content += '    </div>';
+
+                            content += '    <div class="layui-form-item">';
+                            content += '	    <div class="layui-inline">';
+                            content += LabelRadio("state", "状态", 0, "inline", PERSONSTATE);
+                            content += '	    </div>';
+                            content += '    </div>';
+
+                            content += '    <div class="layui-form-item">';
+                            content += '	    <div class="layui-inline">';
+                            content += LabelText("sort", "排序", "", "inline", "", "整数，数值越大越靠前", '');
+                            content += '	    </div>';
+                            content += '    </div>';
+
+                            content += '    <div class="layui-form-item">';
+                            content += LabelText("title", "标题", "", "block", "", "", "请输入标题，不超过三十字");
+                            content += '    </div>';
+
+                            content += '    <div class="layui-form-item">';
+                            content += LabelTextArea("description", "描述", "", "block", "");
+                            content += '    </div>';
+
+                            content += '    <div class="layui-form-item">';
+                            content += LabelChunText("默认封面", ImgWidthOutput("", "", "max-width:190px;"), "inline");
+                            content += LabelUploadImg("更换图片");
+                            content += '    </div>';
+
+                            content += '    <div class="layui-form-item layui-form-text">';
+                            // content += LabelTextEdit("文本编辑");
+                            // content += '    	<label class="layui-form-label">' + name + '</label>';
+                            content += '        <div id="editor" type="text/plain" style="width:900px;height:700px;"></div>'
+                            content += '    </div>';
+
+                            content += '    <div class="layui-form-item">';
+                            content += '	    <div class="layui-input-block">';
+                            content += LabelButton("立即新增", "layui-btn-warm", "button_add();");
+                            content += LabelButton("关闭窗口", "layui-btn-primary", "button_close();");
+                            content += '	    </div>';
+                            content += '    </div>';
+
+                            content += '  	</form>';
+                            //弹出查看框
+                            layer.open({
+                                type: 1,
+                                title: '新增内容',
+                                area: ['1000px', '700px'],
+                                //offset: ['10px', '100px'],
+                                content: content, //这里content是一个普通的String
+                                cancel: function(index, layero) {
+                                    UE.getEditor('editor').destroy();
+                                }
+                            });
+
+                            //绑定富文本编辑器DIV的ID
+                            var ue = UE.getEditor('editor');
+                            // createBox("test");   初始化编辑器
+                            // var editor = new RichEditor("#editor", {
+                            //     width: 900,
+                            //     height: 400,
+                            //     toolBg: "#eee",
+                            //     buttons: {
+                            //         justifyLeft: {
+                            //             title: "居左",
+                            //             icon: "\uf036"
+                            //         },
+                            //         justifyCenter: {
+                            //             title: "居中",
+                            //             icon: "\uf037"
+                            //         },
+                            //         justifyRight: {
+                            //             title: "居右",
+                            //             icon: "\uf038"
+                            //         },
+                            //         insertImage: {
+                            //             title: "插入图片",
+                            //             icon: "\uf03e"
+                            //         }
+                            //     }
+                            // });
+
+                            // // 获取编辑的容器
+                            // // var content = $('.re-editor')[0];
+                            // $('.re-editor div').find('span').css('lineHeight', '1.5');
+
+                            // $("#btn").on('click', function() {
+                            //     $('#content').html($('.re-editor').html());
+                            //     $('#content div').find('span').css('lineHeight', '1.5');
+                            //     $('#content').show();
+
+                            // });
+
+                            form.render();
+                        }
+
+                        //查询数据
+                        ,
+                        SelectData: function() {
+                                //
+                                var content = "";
+                                content += '<br><br>';
+                                content += '  	<form class="layui-form" action="" style="margin:10px;">';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '	    <div class="layui-inline">';
+                                content += LabelSelect("mystate", "状态", "", "inline", PERSONSTATESELECT);
+                                content += '	    </div>';
+                                content += '    </div>';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '	    <div class="layui-inline">';
+                                content += LabelText("title", "标题", "", "inline", "", "标题模糊查找");
+                                content += '	    </div>';
+                                content += '    </div>';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '	    <div class="layui-inline">';
+                                content += LabelTextDate("FBSJ_a", "时间（起）");
+                                content += LabelTextDate("FBSJ_b", "时间（止）");
+                                content += '	    </div>';
+                                content += '    </div>';
+
+                                content += '    <div class="layui-form-item">';
+                                content += '	    <div class="layui-input-block">';
+                                content += LabelButton("立即查询", "layui-btn-warm", "button_select();");
+                                content += LabelButton("关闭窗口", "layui-btn-primary", "button_close();");
+                                content += '	    </div>';
+                                content += '    </div>';
+
+                                content += '  	</form>';
+                                //弹出查看框
+                                layer.open({
+                                    type: 1,
+                                    title: '查询内容',
+                                    area: ['1000px', '700px'],
+                                    //offset: ['10px', '100px'],
+                                    content: content //这里content是一个普通的String
+                                });
+
+                                form.render();
+
+                                layui.use('laydate', function() {
+                                    var laydate = layui.laydate;
+                                    //时间选择器
+                                    laydate.render({
+                                        elem: '#FBSJ_a',
+                                        type: 'datetime'
+                                    });
+                                    laydate.render({
+                                        elem: '#FBSJ_b',
+                                        type: 'datetime'
+                                    });
+                                });
+
+                            }
+                            //刷新
+                            ,
+                        PageReload: function() {
+                            window.location.reload()
+                        }
+                    };
+                //绑定头部操作按钮//////////////////////////////////
+
+                //监听工具栏对应操作
+                $('.layui-btn').on('click', function(obj) {
+                    var type = $(this).data('type');
+                    active[type] ? active[type].call(this) : '';
+                });
+
+            });
+        }
+
+        //表单提交新增函数
+        function button_add() {
+            //初始化参数
+            var title = $("input[name='title']").val();
+            var description = $("textarea[name='description']").val();
+            var cover = $('.a-upload').attr('src');
+            var state = $("input[name='state']:checked").val();
+            var sort = $("input[name='sort']").val();
+
+            // var divs = $('.re-editor')[0].getElementsByTagName('div');
+            // var htmldiv = '';
+            // // 遍历每个div 前面添加空格
+            // var kongge = "";
+            // for (var i = 0; i < divs.length; i++) {
+            //     var item = divs[i];
+            //     var html = item.innerHTML;
+            //     html = html.replace(/(&nbsp;)|(^\s+)|(\s+$)/ig, "");
+            //     item.innerHTML = kongge + html;
+            // }
+            // }
+            var content_STR = UE.getEditor('editor').getContent();
+
+
+            //表单验证模块
+            try {
+                if (title == "") throw "标题不能为空";
+                if (title.length > 30) throw "标题过长";
+                if (content_STR == "") throw "文本内容不能为空";
+                if (!cover) throw "封面不能空";
+            } catch (err) {
+                layer.msg(err);
+                return false;
+            }
+
+            //调用新增接口
+            var res = add_article(CFG_CODE, title, description, cover, content_STR, state, sort);
+            //
+            if (res == true) {
+                layer.msg('操作成功');
+                setTimeout(function() {
+                    layer.closeAll();
+                    window.location.reload();
+                }, 1000);
+            } else {
+                layer.msg(res);
+            }
+
+        }
+
+        //表单提交更新函数  
+        function button_update() {
+            var id = $("input[name='id']").val();
+            var title = $("input[name='title']").val();
+            var description = $("textarea[name='description']").val();
+            var cover = $('.a-upload').attr('src');
+            var state = $("input[name='state']:checked").val();
+            var sort = $("input[name='sort']").val();
+
+            // var divs = $('.re-editor')[0].getElementsByTagName('div');
+            // var htmldiv = '';
+            // // 遍历每个div 前面添加空格
+            // var kongge = "";
+            // for (var i = 0; i < divs.length; i++) {
+            //     var item = divs[i];
+            //     var html = item.innerHTML;
+            //     html = html.replace(/(&nbsp;)|(^\s+)|(\s+$)/ig, "");
+            //     item.innerHTML = kongge + html;
+            // }
+            // }
+            var content_STR = UE.getEditor('editor').getContent();
+
+
+            //表单验证模块
+            try {
+                if (id == "") throw "序号不能为空";
+                if (title == "") throw "标题不能为空";
+                if (title.length > 30) throw "标题过长";
+                if (content_STR == "") throw "文本内容不能为空";
+            } catch (err) {
+                layer.msg(err);
+                return false;
+            }
+
+            //调用更新接口
+            var res = edit_article(id, CFG_CODE, title, description, cover, content_STR, state, sort);
+            if (res == true) {
+                layer.msg('操作成功');
+                setTimeout(function() {
+                    layer.closeAll();
+                    window.location.reload();
+                }, 1000);
+            } else {
+                layer.msg(res);
+            }
+        }
+
+        //表单提交查询函数
+        function button_select() {
+            var title_sl = $("input[name='title']").val();
+            var state_sl = s("mystate").value;
+            var FBSJ_a_sl = $("input[id='FBSJ_a']").val();
+            var FBSJ_b_sl = $("input[id='FBSJ_b']").val();
+
+            onload_list(title_sl, state_sl, FBSJ_a_sl, FBSJ_b_sl);
+            setTimeout(function() {
+                layer.closeAll();
+            }, 1000);
+        }
+
+        //暂不更新
+        function button_close() {
+            layer.closeAll();
+        }
+    </script>
+
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+</body>
+
+</html>

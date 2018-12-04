@@ -1,0 +1,189 @@
+body {
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+.layui-input-100 {
+    width: 100%；
+}
+
+#formlogin .layui-btn {
+    width: 100%;
+}
+
+.admindiv {
+    margin-left: 200px;
+    padding: 20px;
+}
+
+.site-demo-upload {
+    position: relative;
+    background: #e2e2e2;
+}
+
+.site-demo-upload,
+.site-demo-upload img {
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+}
+
+.site-demo-upload .site-demo-upbar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -18px 0 0 -56px;
+}
+
+.site-demo-upload .layui-upload-button {
+    background-color: rgba(0, 0, 0, .2);
+    color: rgba(255, 255, 255, 1);
+}
+
+.a-upload {
+    position: relative;
+    cursor: pointer;
+    background-image: url('../image/upload.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 18px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    display: block;
+    float: left;
+    *display: inline;
+    *zoom: 1
+}
+
+.a-upload input {
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+}
+
+
+/*选择年级的下拉框*/
+
+#layui-input-inline {
+    width: 300px;
+}
+
+@media screen and (min-width:1920px) {
+    .top-nav {
+        width: 1280px;
+        margin: 0 auto;
+    }
+    .top-nav img {
+        margin: 5px 0;
+    }
+    .swiper-container {
+        margin-top: 20px;
+        height: 700px;
+    }
+    .inputdiv {
+        width: 421px;
+        height: 468px;
+        background-color: #F5F5F5;
+        position: absolute;
+        top: 200px;
+        z-index: 999;
+        right: 200px;
+    }
+    .inputdiv .title {
+        padding-left: 50px;
+        padding-top: 60px;
+        font-size: 30px;
+    }
+    #formlogin {
+        padding-top: 60px;
+        padding-left: 50px;
+        width: 321px;
+    }
+    .hb10 {
+        height: 10px;
+    }
+}
+
+@media screen and (max-width:1919px) {
+    .top-nav {
+        width: 1024px;
+        margin: 0 auto;
+    }
+    .top-nav img {
+        margin: 2px 0;
+    }
+    .swiper-container {
+        margin-top: 20px;
+        height: 500px;
+    }
+    .inputdiv {
+        width: 380px;
+        height: 340px;
+        background-color: #F5F5F5;
+        position: absolute;
+        top: 160px;
+        z-index: 999;
+        right: 70px;
+    }
+    .inputdiv .title {
+        padding-left: 40px;
+        padding-top: 40px;
+        font-size: 28px;
+    }
+    #formlogin {
+        padding-top: 40px;
+        padding-left: 40px;
+        width: 300px;
+    }
+    .hb10 {
+        height: 6px;
+    }
+}
+
+
+/* 辅助元素的 样式覆盖 */
+
+.layui-elem-quote {
+    background-color: transparent;
+    font-size: 16px;
+}
+
+.layui-side-scroll {
+    width: 220px;
+    height: auto;
+    overflow-x: hidden;
+}
+
+.layui-layout-admin .layui-side {
+    top: 60px;
+    width: 215px;
+    overflow-x: hidden;
+}
+
+.layui-body {
+    position: absolute;
+    left: 215px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 998;
+    width: auto;
+    overflow: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.layui-nav-tree {
+    width: 215px;
+    padding: 0;
+}

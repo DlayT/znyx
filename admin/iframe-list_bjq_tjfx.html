@@ -1,0 +1,296 @@
+<!--
+	统计分析相关业务页面
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<title>统计分析</title>
+
+<link rel="stylesheet" href="layui225/css/layui.css" media="all">
+<link rel="stylesheet" type="text/css" href="css/main.css">
+
+<style>
+body{padding: 0px;}
+</style>
+</head>
+<body onload="Btn_defined();">
+    <div class="layui-btn-group">
+        <button class="layui-btn" data-type="PageReload"><i class="layui-icon">&#x1002;</i> 刷新</button>
+    </div>
+    <hr class="layui-bg-green">    
+    <blockquote class="layui-elem-quote layui-text">
+      您有权限的班级为：<span id="class_name"></span>
+    </blockquote>	
+
+<div class="layui-container" style="width: 100%;">  
+  <div class="layui-row layui-col-space10">
+    <div class="layui-col-md4">
+
+		<div class="layui-collapse" lay-accordion="">
+		  <div class="layui-colla-item">
+		    <h2 class="layui-colla-title layui-bg-red">今日新增</h2>
+		    <div class="layui-colla-content layui-show" style="min-height: 240px;">
+						<div class="layui-form">
+						  <table class="layui-table">
+						    <colgroup>
+						      <col width="200">
+						      <col width="200">
+						      <col width="100">
+						      <col>
+						    </colgroup>
+						    <thead>
+						      <tr>
+						        <th>相关栏目</th>
+						        <th>增量（条）</th>
+						        <th>操作</th>
+						      </tr> 
+						    </thead>
+						    <tbody>
+						      <tr>
+						        <td>班级通知</td>
+						        <td id="day_BJGG">0</td>
+						        <td></td>
+						      </tr>
+						      <tr>
+						        <td>班级新闻</td>
+						        <td id="day_BJXW">0</td>
+						        <td></td>
+						      </tr>
+						      <tr>
+						        <td>班级荣誉</td>
+						        <td id="day_BJRZ">0</td>
+						        <td></td>
+						      </tr>
+						      <tr>
+						        <td>家长留言</td>
+						        <td id="day_JZRZ">0</td>
+						        <td></td>
+						      </tr>
+						    </tbody>
+						  </table>
+						</div>
+		    </div>
+		  </div>
+		</div>
+
+    </div>
+    <div class="layui-col-md4">
+
+			<div class="layui-collapse" lay-accordion="">
+			  <div class="layui-colla-item">
+			    <h2 class="layui-colla-title">当月新增</h2>
+			    <div class="layui-colla-content layui-show" style="min-height: 240px;">
+						<div class="layui-form">
+						  <table class="layui-table">
+						    <colgroup>
+						      <col width="200">
+						      <col width="200">
+						      <col width="100">
+						      <col>
+						    </colgroup>
+						    <thead>
+						      <tr>
+						        <th>相关栏目</th>
+						        <th>增量（条）</th>
+						        <th>操作</th>
+						      </tr> 
+						    </thead>
+						    <tbody>
+						      <tr>
+						        <td>班级通知</td>
+						        <td id="month_BJGG">0</td>
+						        <td></td>
+						      </tr>
+						      <tr>
+						        <td>班级新闻</td>
+						        <td id="month_BJXW">0</td>
+						        <td></td>
+						      </tr>
+						      <tr>
+						        <td>班级荣誉</td>
+						        <td id="month_BJRZ">0</td>
+						        <td></td>
+						      </tr>
+						      <tr>
+						        <td>家长留言</td>
+						        <td id="month_JZRZ">0</td>
+						        <td></td>
+						      </tr>
+						    </tbody>
+						  </table>
+						</div>
+			    </div>
+			  </div>
+			</div>
+
+    </div>
+    <div class="layui-col-md4">
+
+			<div class="layui-collapse" lay-accordion="">
+			  <div class="layui-colla-item">
+			    <h2 class="layui-colla-title">总量统计</h2>
+			    <div class="layui-colla-content layui-show" style="min-height: 240px;">
+						<div class="layui-form">
+						  <table class="layui-table">
+						    <colgroup>
+						      <col width="200">
+						      <col width="200">
+						      <col width="100">
+						      <col>
+						    </colgroup>
+						    <thead>
+						      <tr>
+						        <th>相关栏目</th>
+						        <th>总量（条）</th>
+						        <th>操作</th>
+						      </tr> 
+						    </thead>
+						    <tbody>
+						      <tr>
+						        <td>班级通知</td>
+						        <td id="all_BJGG">0</td>
+						        <td></td>
+						      </tr>
+						      <tr>
+						        <td>班级新闻</td>
+						        <td id="all_BJXW">0</td>
+						        <td></td>
+						      </tr>
+						      <tr>
+						        <td>班级荣誉</td>
+						        <td id="all_BJRZ">0</td>
+						        <td></td>
+						      </tr>
+						      <tr>
+						        <td>家长留言</td>
+						        <td id="all_JZRZ">0</td>
+						        <td></td>
+						      </tr>
+						    </tbody>
+						  </table>
+						</div>
+			    </div>
+			  </div>
+			</div>
+
+    </div>    
+    
+    <div class="layui-col-md4">
+
+		<div class="layui-collapse" lay-accordion="">
+		  <div class="layui-colla-item">
+		    <h2 class="layui-colla-title layui-bg-green">其他分析</h2>
+		    <div class="layui-colla-content layui-show" style="min-height: 200px;">
+		      <p>其他分析</p>
+		    </div>
+		  </div>
+		</div>
+
+    </div>
+    <div class="layui-col-md4">
+
+			<div class="layui-collapse" lay-accordion="">
+			  <div class="layui-colla-item">
+			    <h2 class="layui-colla-title layui-bg-green">其他分析</h2>
+			    <div class="layui-colla-content layui-show" style="min-height: 200px;">
+			      <p>相关通知</p>
+			    </div>
+			  </div>
+			</div>
+
+    </div>
+    <div class="layui-col-md4">
+
+			<div class="layui-collapse" lay-accordion="">
+			  <div class="layui-colla-item">
+			    <h2 class="layui-colla-title layui-bg-green">其他分析</h2>
+			    <div class="layui-colla-content layui-show" style="min-height: 200px;">
+			      
+			    </div>
+			  </div>
+			</div>
+
+    </div> 
+   
+   
+  </div>
+</div>  
+
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/md5.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/public.js"></script>
+<script type="text/javascript" src="js/api.js"></script>
+<script src="layui225/layui.js"></script>
+<script>
+	
+	
+	var dwid = get_session("DWID");
+
+	//全校管理员bjid为DWID
+	if(UserMannagerType(get_session("YHM"))=="99")
+	{
+	var bjid = get_session("DWID");	
+	//任教班级
+	s("class_name").innerHTML = "全校所有班级";	
+	}
+	else
+	{
+	var bjid = get_session("RJBJ");	
+	//任教班级
+	s("class_name").innerHTML = Class_name(bjid);	
+	}
+	
+	
+
+	//获取当日数据，并赋值
+	var day = tjfx_add(1,dwid,bjid);
+	s("day_BJGG").innerHTML = day.BJGG;
+	s("day_BJXW").innerHTML = day.BJXW;
+	s("day_BJRZ").innerHTML = day.BJRZ;
+	s("day_JZRZ").innerHTML = day.JZRZ;
+
+	//获取当月数据，并赋值
+	var month = tjfx_add(2,dwid,bjid);
+	s("month_BJGG").innerHTML = month.BJGG;
+	s("month_BJXW").innerHTML = month.BJXW;
+	s("month_BJRZ").innerHTML = month.BJRZ;
+	s("month_JZRZ").innerHTML = month.JZRZ;
+
+	//获取总数据，并赋值
+	var all = tjfx_add(99,dwid,bjid);
+	s("all_BJGG").innerHTML = all.BJGG;
+	s("all_BJXW").innerHTML = all.BJXW;
+	s("all_BJRZ").innerHTML = all.BJRZ;
+	s("all_JZRZ").innerHTML = all.JZRZ;
+	
+	function Btn_defined() {
+		//初始化操作按钮，并绑定对应事件	
+		layui.use('table', function() {
+			var table = layui.table;
+			var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功  
+			var $ = layui.jquery,
+				active = {
+					PageReload: function() {
+						window.location.reload()
+					}
+				};
+
+			//监听工具栏对应操作
+			$('.layui-btn').on('click', function(obj) {
+				var type = $(this).data('type');
+				active[type] ? active[type].call(this) : '';
+			});
+
+		});
+	}
+
+</script>
+</body>
+</html>
+
+
+
